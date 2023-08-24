@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace mlb /*my library*/ {
+namespace mylib {
 
 struct SharedData;
 
@@ -21,10 +21,10 @@ public:
     ~shared_ptr();
     T* get();
     T& operator*();
-    const T* operator->();
+    T* operator->();
     explicit operator bool();
     bool operator!();
     const uint16_t counter() const;
 };
 
-}// mlb
+}   // mylib

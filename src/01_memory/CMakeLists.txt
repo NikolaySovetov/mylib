@@ -1,2 +1,2 @@
 add_subdirectory(unique)
-#add_subdirectory(shared)
+add_subdirectory(shared)

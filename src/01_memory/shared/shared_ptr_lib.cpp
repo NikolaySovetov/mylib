@@ -2,30 +2,12 @@
 #include "shared_ptr_lib.hpp"
 #include <iostream>
 
-namespace mlb {
+#ifdef TEST_ON 
+#include "fortests.hpp"
+    mylib::tests::MsSettings s3{mylib::tests::Color::green, "  >> sh_ptr"};
+#endif
 
-namespace shared_info {
-
-template<typename... Args>
-inline void PrintInfo(Args... words) {
-#ifdef SHARED_TEST
-
-#ifdef ONE_TAB
-std::cout << "  ";
-#endif    
-
-#ifdef TWO_TAB
-std::cout << "    ";
-#endif    
-
-#ifdef THREE_TAB
-std::cout << "      ";
-#endif    
-    std::cout << ">>>";
-    (std::cout << ... << words);
-#endif    
-}    
-} // info
+namespace mylib {
 
 struct SharedData {
     uint16_t m_count;
@@ -43,18 +25,24 @@ struct SharedData {
 
 template<typename T>
 shared_ptr<T>::shared_ptr(): m_data{nullptr}, m_ptr{nullptr} {
-    shared_info::PrintInfo("shared_ptr() created\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {"() created\n"}); 
+#endif
 }
 
 template<typename T>
 shared_ptr<T>::shared_ptr(T* ptr): m_data{new SharedData()}, m_ptr{ptr} {
-    shared_info::PrintInfo("shared_ptr(T*) created\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {"(T*) created\n"}); 
+#endif
 }
 
 template<typename T>
 shared_ptr<T>::shared_ptr(const shared_ptr& sh): m_data{sh.m_data}, m_ptr{sh.m_ptr} {
     ++(*m_data);
-    shared_info::PrintInfo("shared_ptr(const shared_ptr&) copied\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {"(const sh_ptr&) copied\n"}); 
+#endif
 }
 
 template<typename T>
@@ -75,7 +63,9 @@ shared_ptr<T>& shared_ptr<T>::operator=(const shared_ptr& sh) {
             ++(*m_data);   
         }
     }
-    shared_info::PrintInfo("operator=(shared_ptr&&) copyed\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {" =(sh_ptr) copied\n"}); 
+#endif
     return *this;
 }
 
@@ -83,7 +73,9 @@ template<typename T>
 shared_ptr<T>::shared_ptr(shared_ptr&& sh): m_data{sh.m_data}, m_ptr{sh.m_ptr} {
     sh.m_ptr = nullptr;
     sh.m_data = nullptr;
-    shared_info::PrintInfo("shared_ptr(shared_ptr&&) moved\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {"(sh_ptr&&) moved\n"}); 
+#endif
 }
 
 template<typename T>
@@ -106,7 +98,9 @@ shared_ptr<T>& shared_ptr<T>::operator=(shared_ptr&& sh) {
             sh.m_data = nullptr;
         }
     }
-    shared_info::PrintInfo("operator=(shared_ptr&&) moved\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {" =(sh_ptr) moved\n"}); 
+#endif
     return *this;
 }
 
@@ -119,7 +113,9 @@ shared_ptr<T>::~shared_ptr() {
             delete m_data;
         }
     }
-    shared_info::PrintInfo("~shared_ptr() destroyed\n");
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s3, {"() destroyed\n"}); 
+#endif
 }
 
 template<typename T>
@@ -129,7 +125,7 @@ template<typename T>
 T& shared_ptr<T>::operator*() { return *m_ptr; } 
 
 template<typename T>
-const T* shared_ptr<T>::operator->() { return m_ptr; }
+T* shared_ptr<T>::operator->() { return m_ptr; }
 
 template<typename T>
 shared_ptr<T>::operator bool() { return (m_ptr != nullptr); }
@@ -142,4 +138,4 @@ const uint16_t shared_ptr<T>::counter() const {
     return m_data->m_count; 
 }
 
-}// mlb
+}   // mylib

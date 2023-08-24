@@ -3,4 +3,5 @@ add_subdirectory(01_memory)
 
 add_executable(testexec testexec.cpp)
 target_link_libraries(testexec PRIVATE fortests
-                               PRIVATE unique_ptr)
+                               PRIVATE unique_ptr
+                               PRIVATE shared_ptr)
