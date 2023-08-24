@@ -1,0 +1,4 @@
+#cmakedefine SHARED_TEST
+#cmakedefine ONE_TAB
+#cmakedefine TWO_TAB
+#cmakedefine THREE_TAB
