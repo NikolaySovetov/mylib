@@ -1,6 +1,5 @@
 #include "configured/configured.h"
 #include "unique_ptr_lib.hpp"
-#include <iostream>
 
 #ifdef TEST_ON
 #include "fortests.hpp" 

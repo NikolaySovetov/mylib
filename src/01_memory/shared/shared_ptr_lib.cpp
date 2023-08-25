@@ -1,6 +1,5 @@
-#include "configured/sharedconfig.h"
+#include "configured/configured.h"
 #include "shared_ptr_lib.hpp"
-#include <iostream>
 
 #ifdef TEST_ON 
 #include "fortests.hpp"
