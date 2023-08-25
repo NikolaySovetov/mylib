@@ -1,5 +1,7 @@
 add_library(list list_lib.cpp)
+
 set(TEST_ON ON)
+set(INTERNAL_TEST_ON ON)
 
 configure_file(configured.h.in configured/configured.h)
 target_include_directories(list PUBLIC .  

@@ -1,9 +1,14 @@
 #include "fortests.hpp"
 #include "unique_ptr.hpp"
 #include "shared_ptr.hpp"
+#include "list.hpp"
 #include <iostream>
 
 int main()  {
+
+/*     mylib::tests::informator.PrintMess(mylib::tests::Color::green, ">>> ",
+                                       {"Hello", " ", "world" , "!!!", "\n"});
+ */
 
 /*     mylib::unique_ptr<mylib::tests::Person> uniq_p1 {new mylib::tests::Person{"Name"}};
     auto uniq_p2 = std::move(uniq_p1);
@@ -21,9 +26,21 @@ int main()  {
     std::cout << "Name of Person is " << sh_p5->GetName() << '\n';
  */     
 
+/*     mylib::list<mylib::tests::Person> list;
+    list.pop_back(mylib::tests::Person{"Nik"});
+    list.push_back(mylib::tests::Person{"Bob"});
+    list.push_back(mylib::tests::Person{"Tom"});
+    list.pop_back(mylib::tests::Person{"Ira"});
+    list.pop_back(mylib::tests::Person{"Vika"});
+    list.pop_back(mylib::tests::Person{"Anna"});
+ */    
 
+/*     mylib::list<int> list;s
+    std::cout << ((list.empty()) ? ("empty") : ("not empty") ) << '\n'; 
 
-
+    mylib::list<int> list1 {101};
+    std::cout << ((list1.empty()) ? ("empty") : ("not empty") ) << '\n'; 
+ */
 
     std::cout << "------------------\n";
 

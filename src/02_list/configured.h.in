@@ -1,1 +1,2 @@
 #cmakedefine TEST_ON
+#cmakedefine INTERNAL_TEST_ON

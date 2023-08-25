@@ -5,7 +5,7 @@ namespace mylib {
 template<typename T> 
 class unique_ptr {
 private:
-    T* m_ptr;
+    T* uniq_ptr;
 
 public:
     unique_ptr();

@@ -1,5 +1,4 @@
 #pragma once
-#include "shared_ptr.hpp"
 #include "unique_ptr.hpp"
 
 namespace mylib {
@@ -10,16 +9,22 @@ struct ListData;
 template<typename T>
 class list {
 private:
-    unique_ptr<ListData<T>> m_data;
+    unique_ptr<ListData<T>> list_data;
 
 public:
     list();
-    list(T);
+    list(const T& obj);
     list(const list&);
     list& operator=(const list&);
     list(list&&);
     list& operator=(list&&);
     ~list();
+    void push_back(const T& obj);
+    void push_back(T&& obj);
+    void pop_back(const T& obj);
+    void pop_back(T&& obj);
+    bool empty();
+
 };
 
 }   // mylib

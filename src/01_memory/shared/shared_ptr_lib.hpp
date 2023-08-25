@@ -8,8 +8,8 @@ struct SharedData;
 template<typename T> 
 class shared_ptr {
 private:
-    T* m_ptr;
-    SharedData* m_data;
+    T* sh_ptr;
+    SharedData* sh_data;
 
 public:
     shared_ptr();
