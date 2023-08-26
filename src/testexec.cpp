@@ -1,3 +1,4 @@
+#include "testexec.hpp"
 #include "fortests.hpp"
 #include "unique_ptr.hpp"
 #include "shared_ptr.hpp"
@@ -35,12 +36,14 @@ int main()  {
     list.pop_back(mylib::tests::Person{"Anna"});
  */    
 
-/*     mylib::list<int> list;s
+/*     mylib::list<int> list;
     std::cout << ((list.empty()) ? ("empty") : ("not empty") ) << '\n'; 
 
     mylib::list<int> list1 {101};
     std::cout << ((list1.empty()) ? ("empty") : ("not empty") ) << '\n'; 
  */
+
+    MyClass c(101, 102, 103, 104);
 
     std::cout << "------------------\n";
 

@@ -3,7 +3,7 @@
 
 #ifdef TEST_ON
 #include "fortests.hpp" 
-    mylib::tests::MsSettings s2{mylib::tests::Color::cyan, " >> unique"};
+    mylib::tests::MsSettings s2{mylib::tests::Color::cyan, "  >> unique"};
 #endif
 
 namespace mylib {
