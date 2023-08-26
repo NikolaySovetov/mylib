@@ -17,9 +17,9 @@ public:
     ~unique_ptr();
     T* get();
     T& operator*();
-    T* operator->();
-    explicit operator bool();
-    bool operator!();
+    T* operator->() const;
+    explicit operator bool() const;
+    bool operator!() const;
 };
 
 }   // mylib

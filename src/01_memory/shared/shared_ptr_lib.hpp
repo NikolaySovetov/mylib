@@ -22,8 +22,8 @@ public:
     T* get();
     T& operator*();
     T* operator->();
-    explicit operator bool();
-    bool operator!();
+    explicit operator bool() const;
+    bool operator!() const;
     const uint16_t counter() const;
 };
 

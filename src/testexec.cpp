@@ -27,14 +27,15 @@ int main()  {
     std::cout << "Name of Person is " << sh_p5->GetName() << '\n';
  */     
 
-/*     mylib::list<mylib::tests::Person> list;
+    mylib::list<mylib::tests::Person> list;
     list.pop_back(mylib::tests::Person{"Nik"});
     list.push_back(mylib::tests::Person{"Bob"});
     list.push_back(mylib::tests::Person{"Tom"});
     list.pop_back(mylib::tests::Person{"Ira"});
     list.pop_back(mylib::tests::Person{"Vika"});
     list.pop_back(mylib::tests::Person{"Anna"});
- */    
+
+    std::cout << "Number of list nodes: " << list.counter() << '\n';     
 
 /*     mylib::list<int> list;
     std::cout << ((list.empty()) ? ("empty") : ("not empty") ) << '\n'; 
@@ -43,7 +44,6 @@ int main()  {
     std::cout << ((list1.empty()) ? ("empty") : ("not empty") ) << '\n'; 
  */
 
-    MyClass c(101, 102, 103, 104);
 
     std::cout << "------------------\n";
 

@@ -31,7 +31,7 @@ struct ListNode {
 
 template<typename T>
 struct ListData {
-    int m_counter;
+    size_t m_counter;
     shared_ptr<ListNode<T>> m_first;
     shared_ptr<ListNode<T>> m_last;
 
@@ -53,7 +53,6 @@ struct ListData {
 #endif
     }
 
-
     void push_back(const T& obj) {
         if (m_counter == 1) {
             m_first->m_next = {new ListNode<T>{obj}};
@@ -65,7 +64,6 @@ struct ListData {
             m_last = std::move(ptr);
         }
     } 
-
     void push_back(T&& obj) {
         if (m_counter == 1) {
             m_first->m_next = {new ListNode<T>{std::move(obj)}};
@@ -77,18 +75,17 @@ struct ListData {
             m_last = std::move(ptr);
         }
     } 
-
     void pop_back(const T& obj) {
         auto temp = m_first;
         m_first = {new ListNode<T>{obj}};
         m_first->m_next = std::move(temp);
     }
-
     void pop_back(T&& obj) {
         auto temp = m_first;
         m_first = {new ListNode<T>{std::move(obj)}};
         m_first->m_next = std::move(temp);
     }
+    size_t counter() const { return m_counter; }
 };
 
 template<typename T>
@@ -150,8 +147,16 @@ void list<T>::pop_back(T&& obj) {
 }
 
 template<typename T>
-bool list<T>::empty() {
+bool list<T>::empty() const {
     return !list_data;
+}
+
+template<typename T>
+size_t list<T>::counter() const {
+    if (!list_data) {
+        return 0;
+    }
+    return list_data->m_counter;
 }
 
 

@@ -150,10 +150,10 @@ template<typename T>
 T* shared_ptr<T>::operator->() { return sh_ptr; }
 
 template<typename T>
-shared_ptr<T>::operator bool() { return (sh_ptr != nullptr); }
+shared_ptr<T>::operator bool() const { return (sh_ptr != nullptr); }
 
 template<typename T>
-bool shared_ptr<T>::operator!() { return (sh_ptr == nullptr); }
+bool shared_ptr<T>::operator!() const { return (sh_ptr == nullptr); }
 
 template<typename T>
 const uint16_t shared_ptr<T>::counter() const {

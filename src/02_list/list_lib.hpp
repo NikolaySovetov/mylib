@@ -23,8 +23,8 @@ public:
     void push_back(T&& obj);
     void pop_back(const T& obj);
     void pop_back(T&& obj);
-    bool empty();
-
+    bool empty() const;
+    size_t counter() const;
 };
 
 }   // mylib

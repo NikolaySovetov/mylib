@@ -63,17 +63,17 @@ T& unique_ptr<T>::operator*() {
 }
 
 template<typename T>
-T* unique_ptr<T>::operator->() {
+T* unique_ptr<T>::operator->() const {
     return uniq_ptr;
 }
 
 template<typename T>
-unique_ptr<T>::operator bool() {
+unique_ptr<T>::operator bool() const {
     return uniq_ptr != nullptr; 
 }
 
 template<typename T>
-bool unique_ptr<T>::operator!() {
+bool unique_ptr<T>::operator!() const {
     return uniq_ptr == nullptr; 
 }
 
