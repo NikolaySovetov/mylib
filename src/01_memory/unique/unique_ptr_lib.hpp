@@ -15,8 +15,8 @@ public:
     unique_ptr(unique_ptr&&);
     unique_ptr& operator=(unique_ptr&&);
     ~unique_ptr();
-    T* get();
-    T& operator*();
+    T* get() const;
+    T& operator*() const;
     T* operator->() const;
     explicit operator bool() const;
     bool operator!() const;

@@ -14,6 +14,7 @@ private:
 public:
     list();
     list(const T& obj);
+    list(T&& obj);
     list(const list&);
     list& operator=(const list&);
     list(list&&);
@@ -23,8 +24,9 @@ public:
     void push_back(T&& obj);
     void pop_back(const T& obj);
     void pop_back(T&& obj);
-    bool empty() const;
-    size_t counter() const;
+    const T* first() const;
+    const bool empty() const;
+    const size_t counter() const;
 };
 
 }   // mylib

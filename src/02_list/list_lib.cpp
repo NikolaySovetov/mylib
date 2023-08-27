@@ -16,6 +16,7 @@ struct ListNode {
 
     ListNode() = delete;
     ListNode(const T& obj): m_next{}, object{obj} {
+
 #ifdef TEST_ON
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListNode(T&) created\n"}); 
@@ -27,6 +28,11 @@ struct ListNode {
                                 "    >> ", {"ListNode(T&) created\n"}); 
 #endif
     }      
+    ListNode(const ListNode&) = delete;
+    ListNode& operator=(const ListNode&) = delete;
+    ListNode(ListNode&&) = delete;
+    ListNode& operator=(const ListNode&&) = delete;
+    ~ListNode() = default;
 };
 
 template<typename T>
@@ -35,7 +41,7 @@ struct ListData {
     shared_ptr<ListNode<T>> m_first;
     shared_ptr<ListNode<T>> m_last;
 
-    ListData() = delete;
+    ListData() = default;
     ListData(const T& obj): m_first{new ListNode<T>{obj}},
                             m_last{}, 
                             m_counter{1} {
@@ -52,6 +58,10 @@ struct ListData {
                                 "    >> ", {"ListData(T&&) created\n"});
 #endif
     }
+    ListData(const ListData&) = delete;
+    ListData& operator=(const ListData&) = delete;
+    ListData(ListData&&) = delete;
+    ListData& operator=(ListData&&) = delete;
 
     void push_back(const T& obj) {
         if (m_counter == 1) {
@@ -62,6 +72,7 @@ struct ListData {
             mylib::shared_ptr<ListNode<T>> ptr {new ListNode<T>{obj}};
             m_last->m_next = ptr;
             m_last = std::move(ptr);
+            ++m_counter;
         }
     } 
     void push_back(T&& obj) {
@@ -73,17 +84,20 @@ struct ListData {
             mylib::shared_ptr<ListNode<T>> ptr {new ListNode<T>{std::move(obj)}};
             m_last->m_next = ptr;
             m_last = std::move(ptr);
+            ++m_counter;
         }
     } 
     void pop_back(const T& obj) {
         auto temp = m_first;
         m_first = {new ListNode<T>{obj}};
         m_first->m_next = std::move(temp);
+        ++m_counter;
     }
     void pop_back(T&& obj) {
         auto temp = m_first;
         m_first = {new ListNode<T>{std::move(obj)}};
         m_first->m_next = std::move(temp);
+        ++m_counter;
     }
     size_t counter() const { return m_counter; }
 };
@@ -101,6 +115,60 @@ list<T>::list(const T& obj): list_data{new ListData<T>{obj}} {
 #ifdef TEST_ON 
     tests::informator.PrintMess(s4, {"(const T&) created\n"}); 
 #endif
+}
+
+template<typename T>
+list<T>::list(T&& obj): list_data{new ListData<T>{std::move(obj)}} {
+    list_data->m_counter = 1;
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s4, {"(T&&) created\n"}); 
+#endif
+}
+
+template<typename T>
+list<T>::list(const list& other) {
+    if (other.empty()) {
+        return; 
+    } else {
+        list_data = new ListData{*(other.first())};
+        auto next_node = other.list_data->m_first->m_next.get();
+        while (next_node) {
+            this->push_back(next_node->object);
+            next_node = next_node->m_next.get();
+        }
+    }
+}
+
+template<typename T>
+list<T>& list<T>::operator=(const list& other) {
+    if (this != &other) {
+    list_data.~unique_ptr();
+    if (!other.empty()) {
+        list_data = new ListData<T>{std::move(*(other.first()))};
+        //list_data->push_back(*(other.first()));
+        //list_data->push_back(*(other.first()));
+        auto next_node = other.list_data->m_first->m_next.get();
+        while (next_node) {
+            this->push_back(next_node->object);
+            next_node = next_node->m_next.get();
+        }
+    }
+    }
+    return *this;
+}
+
+template<typename T>
+list<T>::list(list&& other) {
+    this->list_data = std::move(other.list_data);
+}
+
+template<typename T>
+list<T>& list<T>::operator=(list&& other) {
+    if (this != &other) {
+        list_data.~unique_ptr();
+        list_data = std::move(other.list_data);
+    }
+    return *this;
 }
 
 template<typename T>
@@ -147,12 +215,20 @@ void list<T>::pop_back(T&& obj) {
 }
 
 template<typename T>
-bool list<T>::empty() const {
+const T* list<T>::first() const {
+    if (!list_data) {
+        return nullptr;
+    }
+    return &(list_data->m_first->object);
+}
+
+template<typename T>
+const bool list<T>::empty() const {
     return !list_data;
 }
 
 template<typename T>
-size_t list<T>::counter() const {
+const size_t list<T>::counter() const {
     if (!list_data) {
         return 0;
     }

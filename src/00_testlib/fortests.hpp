@@ -33,7 +33,7 @@ public:
     void SetMarker(const char*);
     void SetColor(const Color&);
     void SetParam(const Color&, const char*);
-    void PrintMess(const std::vector<const char*>&);
+    void PrintMess(const std::vector<const char*>&) const;
     void PrintMess(const MsSettings&,
                    const std::vector<const char*>&);
     void PrintMess(const Color&, const char*,
@@ -53,7 +53,7 @@ public:
     Person(Person&&);
     Person& operator=(Person&&);
     ~Person();
-    const std::string& GetName(); 
+    const std::string& GetName() const; 
 };
 
 }   //tests

@@ -35,7 +35,7 @@ void PrintC::SetParam(const Color& cl, const char* mk) {
     m_marker = mk;
 }
 
-void PrintC::PrintMess(const std::vector<const char*>& v){
+void PrintC::PrintMess(const std::vector<const char*>& v) const {
 
     switch (m_color) {
     case Color::black :
@@ -149,7 +149,7 @@ Person::~Person() {
 #endif
 } 
 
-const std::string& Person::GetName() {
+const std::string& Person::GetName() const {
     return m_name;
 }
 

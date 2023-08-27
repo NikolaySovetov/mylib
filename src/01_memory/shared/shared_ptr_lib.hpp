@@ -19,9 +19,9 @@ public:
     shared_ptr(shared_ptr&&);
     shared_ptr& operator=(shared_ptr&&);
     ~shared_ptr();
-    T* get();
-    T& operator*();
-    T* operator->();
+    T* get() const;
+    T& operator*() const;
+    T* operator->() const;
     explicit operator bool() const;
     bool operator!() const;
     const uint16_t counter() const;

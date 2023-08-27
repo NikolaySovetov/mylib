@@ -117,6 +117,8 @@ shared_ptr<T>::~shared_ptr() {
         if ((*sh_data) < 1) {
             delete sh_ptr;
             delete sh_data;
+            sh_ptr = nullptr;
+            sh_data = nullptr;
 #ifdef TEST_ON
     shared_destroyed_marker = true;
 #endif
@@ -141,13 +143,13 @@ shared_ptr<T>::~shared_ptr() {
 }
 
 template<typename T>
-T* shared_ptr<T>::get() { return sh_ptr; }
+T* shared_ptr<T>::get() const { return sh_ptr; }
 
 template<typename T>
-T& shared_ptr<T>::operator*() { return *sh_ptr; } 
+T& shared_ptr<T>::operator*() const { return *sh_ptr; } 
 
 template<typename T>
-T* shared_ptr<T>::operator->() { return sh_ptr; }
+T* shared_ptr<T>::operator->() const { return sh_ptr; }
 
 template<typename T>
 shared_ptr<T>::operator bool() const { return (sh_ptr != nullptr); }

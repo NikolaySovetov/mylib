@@ -47,18 +47,19 @@ unique_ptr<T>& unique_ptr<T>::operator=(unique_ptr&& u) {
 template<typename T>
 unique_ptr<T>::~unique_ptr() {
     delete uniq_ptr;
+    uniq_ptr = nullptr;
 #ifdef TEST_ON 
     tests::informator.PrintMess(s2, {"() destroyed\n"}); 
 #endif
 }
 
 template<typename T>
-T* unique_ptr<T>::get() {
+T* unique_ptr<T>::get() const {
     return uniq_ptr;
 }
 
 template<typename T>
-T& unique_ptr<T>::operator*() {
+T& unique_ptr<T>::operator*() const {
     return *uniq_ptr;
 }
 
