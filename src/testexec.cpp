@@ -3,6 +3,7 @@
 #include "unique_ptr.hpp"
 #include "shared_ptr.hpp"
 #include "list.hpp"
+#include "pair.hpp"
 #include <iostream>
 
 int main()  {
@@ -59,7 +60,7 @@ int main()  {
    list01.push_back(mylib::tests::Person{"Bob"});
    list01.push_back(mylib::tests::Person{"Jack"});
    
-   //std::cout << "list01.empty():" << list01.empty() << '\n'; 
+   std::cout << "list01.empty():" << list01.empty() << '\n'; 
    std::cout << "==================\n";
 
    mylib::list<mylib::tests::Person> list02;// {mylib::tests::Person{"Nik_Nik"}};
@@ -67,8 +68,20 @@ int main()  {
    list02.push_back(mylib::tests::Person{"Tom_Tom"});
    std::cout << "******************\n";
 
-   list02 = list01;
+   //list02 = list01;
+   list02 = std::move(list01);
+
+   std::cout << "First name is " << list02.first()->GetName() << '\n';
       
+ 
+/*    mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
+      {mylib::tests::Person{"Nik"}, mylib::tests::Person{"Ira"}};      
+
+   int a = 1010;
+   int b = 2020;
+   mylib::pair<int, int> p2{a, b};      
+ */ 
+ 
    std::cout << "------------------\n";
    
    return 0;

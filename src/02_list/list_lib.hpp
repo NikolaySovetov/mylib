@@ -25,7 +25,7 @@ public:
     void pop_back(const T& obj);
     void pop_back(T&& obj);
     const T* first() const;
-    const bool empty() const;
+    bool empty() const;
     const size_t counter() const;
 };
 
