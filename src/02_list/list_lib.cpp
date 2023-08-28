@@ -13,27 +13,6 @@ template<typename T>
 struct ListNode {
     T object;
     shared_ptr<ListNode> m_next;
-
-/*     ListNode() = delete;
-    ListNode(const T& obj): m_next{}, object{obj} {
-
-#ifdef TEST_ON
-    tests::informator.PrintMess(mylib::tests::Color::black, 
-                                "    >> ", {"ListNode(T&) created\n"}); 
-#endif
-    }      
-    ListNode(T&& obj): m_next{}, object{std::move(obj)} {
-#ifdef TEST_ON
-    tests::informator.PrintMess(mylib::tests::Color::black, 
-                                "    >> ", {"ListNode(T&) created\n"}); 
-#endif
-    }      
-    ListNode(const ListNode&) = delete;
-    ListNode& operator=(const ListNode&) = delete;
-    ListNode(ListNode&&) = delete;
-    ListNode& operator=(const ListNode&&) = delete;
-    ~ListNode() = default;
- */
 };
 
 template<typename T>
@@ -42,31 +21,20 @@ struct ListData {
     shared_ptr<ListNode<T>> m_first;
     shared_ptr<ListNode<T>> m_last;
 
-//    ListData() = default;
-
     ListData(const T& obj): m_first{new ListNode<T>{obj}},
-                            m_last{}, 
-                            m_counter{1} {
+                            m_last{}, m_counter{1} {
 #ifdef TEST_ON 
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListData(T&) created\n"});
 #endif
     }
     ListData(T&& obj): m_first{new ListNode<T>{std::move(obj)}},
-                            m_last{}, 
-                            m_counter{1} {
+                       m_last{}, m_counter{1} {
 #ifdef TEST_ON 
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListData(T&&) created\n"});
 #endif
     }
-
-/*     ListData(const ListData&) = delete;
-    ListData& operator=(const ListData&) = delete;
-    ListData(ListData&&) = delete;
-    ListData& operator=(ListData&&) = delete;
-    ~ListData() = default;
- */
 
     void push_back(const T& obj) {
         if (m_counter == 1) {

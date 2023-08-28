@@ -15,11 +15,6 @@ struct SharedData {
     uint16_t sh_count;
 
     SharedData(): sh_count{1} {}
-    SharedData(const SharedData&) = delete;
-    SharedData& operator=(const SharedData&) = delete;
-    SharedData(SharedData&&) = delete;
-    SharedData& operator=(SharedData&&) = delete;
-    ~SharedData() = default;
     void operator++() { ++sh_count; }
     void operator--() { --sh_count; }
     bool operator<(uint16_t val) { return sh_count < val; }

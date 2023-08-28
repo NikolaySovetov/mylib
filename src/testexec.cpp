@@ -39,20 +39,13 @@ int main()  {
     list.pop_back(mylib::tests::Person{"Anna"});
 
     std::cout << "First node: " << list.first()->GetName() << '\n';
- */
 
-/*     mylib::list<int> int_list;
+
+    mylib::list<int> int_list;
     std::cout << ((int_list.empty()) ? ("empty") : ("not empty") ) << '\n'; 
 
     mylib::list<int> int_list1 {101};
     std::cout << ((int_list1.empty()) ? ("empty") : ("not empty") ) << '\n'; 
- */
-
-/*    mylib::unique_ptr<mylib::tests::Person> ptr {new mylib::tests::Person{"Nik"}};
-   std::cout << ((!ptr) ? ("empty") : ("not empty")) << '\n';
-   ptr.erase();
-   std::cout << ((!ptr) ? ("empty") : ("not empty")) << '\n';
- */
 
    mylib::list<mylib::tests::Person> list01 {mylib::tests::Person{"Nik"}};
    list01.push_back(mylib::tests::Person{"Sam"});
@@ -72,16 +65,20 @@ int main()  {
    list02 = std::move(list01);
 
    std::cout << "First name is " << list02.first()->GetName() << '\n';
-      
+ */      
  
-/*    mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
-      {mylib::tests::Person{"Nik"}, mylib::tests::Person{"Ira"}};      
+//   mylib::tests::Person nik{"Nik"};
+//   mylib::tests::Person ira{"Ira"};
 
-   int a = 1010;
-   int b = 2020;
-   mylib::pair<int, int> p2{a, b};      
- */ 
- 
+   mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
+      {mylib::tests::Person{"Nik"}, mylib::tests::Person{"Ira"}};
+
+   mylib::pair<mylib::tests::Person, mylib::tests::Person> p2;
+   p2 = std::move(p1);
+
+   std::cout << "First name is " << p2.first()->GetName() << '\n';      
+   std::cout << "Second name is " << p2.second()->GetName() << '\n';
+   
    std::cout << "------------------\n";
    
    return 0;
