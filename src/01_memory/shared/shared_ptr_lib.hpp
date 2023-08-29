@@ -22,6 +22,8 @@ public:
     T* get() const;
     T& operator*() const;
     T* operator->() const;
+    bool operator==(const shared_ptr&) const;
+    bool operator!=(const shared_ptr&) const;
     explicit operator bool() const;
     bool operator!() const;
     const uint16_t counter() const;

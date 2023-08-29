@@ -1,10 +1,11 @@
 add_library(unique_ptr unique_ptr_lib.cpp)
-set(TEST_ON ON)
+set(UNIQUE_TEST ON)
 
-configure_file(configured.h.in configured/configured.h)
-target_include_directories(unique_ptr PUBLIC .  
+configure_file(unique_config.h.in unique_config.hpp)
+target_include_directories(unique_ptr PUBLIC .
                                       PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
-if (${TEST_ON})                                      
+if (${UNIQUE_TEST})                                      
     target_link_libraries(unique_ptr PRIVATE fortests)
 endif()
+

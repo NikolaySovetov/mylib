@@ -1,8 +1,10 @@
 add_library(fortests fortests.cpp)
-set(TEST_MESSAGE ON)
-configure_file(configured.h.in configured/configured.h)
+
+set(PERSON_TEST ON)
+
+configure_file(fortsests_config.h.in fortsests_config.hpp)
 target_include_directories(fortests PUBLIC .
-                                   PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+                                    PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 
 

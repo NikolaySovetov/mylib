@@ -1,8 +1,8 @@
-#include "configured/configured.h"
+#include "list_config.hpp"
 #include "list_lib.hpp"
 //#include "shared_ptr.hpp"
 
-#ifdef TEST_ON
+#ifdef LIST_TEST
 #include "fortests.hpp"
     mylib::tests::MsSettings s4 {mylib::tests::Color::magenta, ">> list"};
 #endif
@@ -23,14 +23,14 @@ struct ListData {
 
     ListData(const T& obj): m_first{new ListNode<T>{obj}},
                             m_last{}, m_size{1} {
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListData(T&) created\n"});
 #endif
     }
     ListData(T&& obj): m_first{new ListNode<T>{std::move(obj)}},
                        m_last{}, m_size{1} {
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListData(T&&) created\n"});
 #endif
@@ -77,7 +77,7 @@ struct ListData {
 
 template<typename T>
 list<T>::list(): list_data{} {
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(s4, {"() created\n"}); 
 #endif
 }
@@ -85,7 +85,7 @@ list<T>::list(): list_data{} {
 template<typename T>
 list<T>::list(const T& obj): list_data{new ListData<T>{obj}} {
     list_data->m_size = 1;
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(s4, {"(const T&) created\n"}); 
 #endif
 }
@@ -93,7 +93,7 @@ list<T>::list(const T& obj): list_data{new ListData<T>{obj}} {
 template<typename T>
 list<T>::list(T&& obj): list_data{new ListData<T>{std::move(obj)}} {
     list_data->m_size = 1;
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(s4, {"(T&&) created\n"}); 
 #endif
 }
@@ -103,7 +103,7 @@ list<T>::list(const list& other) {
     if (other.empty()) {
         return; 
     } else {
-        list_data = new ListData{*(other.first())};
+        list_data = new ListData{*(other.begin())};
         auto next_node = other.list_data->m_first->m_next.get();
         while (next_node) {
             this->push_back(next_node->object);
@@ -117,7 +117,7 @@ list<T>& list<T>::operator=(const list& other) {
     if (this != &other) {
         list_data.~unique_ptr();
         if (!other.empty()) {
-            list_data = new ListData<T>{std::move(*(other.first()))};
+            list_data = new ListData<T>{/* std::move */(*(other.begin()))};
             auto next_node = other.list_data->m_first->m_next.get();
             while (next_node) {
                 this->push_back(next_node->object);
@@ -144,7 +144,7 @@ list<T>& list<T>::operator=(list&& other) {
 
 template<typename T>
 list<T>::~list() {    
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(s4, {"() destroyed\n"}); 
 #endif
 }
@@ -186,7 +186,7 @@ void list<T>::pop_back(T&& obj) {
 }
 
 template<typename T>
-const T* list<T>::first() const {
+T* list<T>::front() const {
     if (!list_data) {
         return nullptr;
     }
@@ -196,13 +196,17 @@ const T* list<T>::first() const {
 template<typename T>
 shared_ptr<ListNode<T>> list<T>::begin() const {
     if (!list_data) {
-        return nullptr;
+        return shared_ptr<ListNode<T>>();
     }
     return list_data->m_first;
 }
 
 template<typename T>
-T* list<T>::end() const {
+shared_ptr<ListNode<T>> list<T>::end() const {
+//    if (!list_data) {
+//        return shared_ptr<ListNode<T>>();
+//    }
+    //return list_data->m_last;
     return nullptr;
 }
 
@@ -220,30 +224,63 @@ const size_t list<T>::size() const {
 }
 
 
-
-
 // *** iterator ***
-#ifdef TEST_ON
+#ifdef LIST_TEST
     mylib::tests::MsSettings s4_1 {mylib::tests::Color::black, "    >> iterator"};
 #endif
 
 template<typename T>
 list<T>::iterator::iterator() {
-#ifdef TEST_ON 
+#ifdef LIST_TEST 
     tests::informator.PrintMess(s4_1, {"() created\n"}); 
 #endif
 }
 
 template<typename T>
-list<T>::iterator::iterator(const shared_ptr<ListNode<T>>& node)
-: current_node{list.begin()} {
-    
-#ifdef TEST_ON 
+list<T>::iterator::iterator(shared_ptr<ListNode<T>> node) {
+   current_node = node;
+
+#ifdef LIST_TEST 
     tests::informator.PrintMess(s4_1, {"() created\n"}); 
 #endif
 }
 
+template<typename T>
+T* list<T>::iterator::operator++() {
+    current_node = current_node->m_next;
+    if (!current_node) {
+        return nullptr;
+    }
+    return &(current_node->object);
+}  
 
+template<typename T>
+T* list<T>::iterator::operator++(int) {
+    auto temp = current_node;
+    current_node = current_node->m_next;
+    if (!temp) {
+        return nullptr;
+    }
+    return &(temp->object);
+}  
+
+template<typename T>
+T* list<T>::iterator::operator->() {
+    if (!current_node) {
+        return nullptr;
+    }
+    return &(current_node->object);
+}  
+
+template<typename T>
+bool list<T>::iterator::operator==(const shared_ptr<ListNode<T>>& node) {
+    return (current_node == node);
+}  
+
+template<typename T>
+bool list<T>::iterator::operator!=(const shared_ptr<ListNode<T>>& node) {
+    return (current_node != node);
+}  
 
 
 }   // mylib

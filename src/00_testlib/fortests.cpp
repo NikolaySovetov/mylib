@@ -1,4 +1,5 @@
-#include "configured/configured.h"
+//#include "fortests_configured.h"
+#include "fortsests_config.hpp"
 #include "fortests.hpp"
 #include <iostream>
 
@@ -92,26 +93,30 @@ void PrintC::PrintMess(const Color& cl, const char* mk,
 }
 
 // *** Person ***
-#ifdef TEST_MESSAGE 
-MsSettings s1{Color::yellow, ">> "};
+#ifdef PERSON_TEST 
+    MsSettings s1{Color::yellow, ">> "};
+        static int  common_person_counter {0};
 #endif
 
 Person::Person(): m_name{"NONE NAME"} {
-#ifdef TEST_MESSAGE 
+#ifdef PERSON_TEST 
     informator.PrintMess(s1, {"Person(", m_name.c_str(), ") created\n"}); 
+    ++common_person_counter;
 #endif
 }
 
 Person::Person(const std::string& name): m_name{name} {
-#ifdef TEST_MESSAGE 
+#ifdef PERSON_TEST 
     informator.PrintMess(s1, {"Person(", m_name.c_str(), ") created\n"}); 
+    ++common_person_counter;
 #endif
 } 
 
 Person::Person(const Person& p) {
     m_name = p.m_name;
-#ifdef TEST_MESSAGE 
+#ifdef PERSON_TEST 
     informator.PrintMess(s1, {"Person(", m_name.c_str(), ") copied\n"}); 
+    ++common_person_counter;
 #endif
 } 
 
@@ -120,7 +125,7 @@ Person& Person::operator=(const Person& p) {
         m_name.erase();
         m_name = p.m_name;
     }
-#ifdef TEST_MESSAGE 
+#ifdef PERSON_TEST 
     informator.PrintMess(s1, {"operator= Person(", m_name.c_str(), ") copied\n"}); 
 #endif
     return *this;
@@ -128,8 +133,9 @@ Person& Person::operator=(const Person& p) {
 
 Person::Person(Person&& p) {
     m_name = std::move(p.m_name);
-#ifdef TEST_MESSAGE 
+#ifdef PERSON_TEST 
     informator.PrintMess(s1, {"operator= Person(", m_name.c_str(), ") moved\n"}); 
+    ++common_person_counter;
 #endif
 } 
 
@@ -137,15 +143,18 @@ Person& Person::operator=(Person&& p) {
     if (this != &p) {
         m_name = std::move(p.m_name);
     }
-#ifdef TEST_MESSAGE 
+#ifdef PERSON_TEST 
     informator.PrintMess(s1, {"operator= Person(", m_name.c_str(), ") moved\n"}); 
 #endif
     return *this;
 } 
 
 Person::~Person() {
-#ifdef TEST_MESSAGE 
-    informator.PrintMess(s1, {"Person(", m_name.c_str(), ") destroyed\n"}); 
+#ifdef PERSON_TEST 
+    --common_person_counter; 
+    informator.PrintMess(s1, {"Person(", m_name.c_str(), ") destroyed\t--- counter: ",
+                         std::to_string(common_person_counter).c_str(),
+                         "\n"}); 
 #endif
 } 
 

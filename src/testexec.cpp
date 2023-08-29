@@ -28,16 +28,21 @@ int main()  {
     std::cout << "Name of Person is " << sh_p5->GetName() << '\n';
  */     
 
-    mylib::list<mylib::tests::Person> list;
-    list.pop_back(mylib::tests::Person{"Nik"});
-    list.push_back(mylib::tests::Person{"Bob"});
-    list.push_back(mylib::tests::Person{"Tom"});
-    list.pop_back(mylib::tests::Person{"Ira"});
-    list.pop_back(mylib::tests::Person{"Vika"});
-    list.pop_back(mylib::tests::Person{"Anna"});
-    
-    mylib::list<int>::iterator it;
+   mylib::list<mylib::tests::Person> list;
+   list.push_back(mylib::tests::Person{"Nik"});
+   list.push_back(mylib::tests::Person{"Bob"});
+   list.push_back(mylib::tests::Person{"Tom"});
+   //list.pop_back(mylib::tests::Person{"Ira"});
+   //list.pop_back(mylib::tests::Person{"Vika"});
+   //list.pop_back(mylib::tests::Person{"Anna"});
 
+   std::cout << "******************\n";    
+
+   mylib::list<mylib::tests::Person>::iterator it(list.begin());     
+
+   for (it; it != list.end(); ++it) {
+      std::cout << it->GetName() << '\n';
+   }
 
 /*  std::cout << "First node: " << list.first()->GetName() << '\n';
 
@@ -76,7 +81,6 @@ int main()  {
   mylib::tests::Person vera{"Vera"};
   *(person) = vera; 
  */    
-
 
 
    std::cout << "------------------\n";

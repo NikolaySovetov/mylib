@@ -1,12 +1,12 @@
-#include "configured/configured.h"
+//#include "shared_configured.h"
+#include "shared_config.hpp"
 #include "shared_ptr_lib.hpp"
 
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
 #include "fortests.hpp"
     mylib::tests::MsSettings s3{mylib::tests::Color::green, " >> sh_ptr"};
         static int  common_shared_counter {0};
         static bool shared_destroyed_marker {false};
-        
 #endif
 
 namespace mylib {
@@ -22,7 +22,7 @@ struct SharedData {
 
 template<typename T>
 shared_ptr<T>::shared_ptr(): sh_data{nullptr}, sh_ptr{nullptr} {
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {"() created\n"});
     ++common_shared_counter;     
 #endif
@@ -30,7 +30,7 @@ shared_ptr<T>::shared_ptr(): sh_data{nullptr}, sh_ptr{nullptr} {
 
 template<typename T>
 shared_ptr<T>::shared_ptr(T* ptr): sh_data{new SharedData()}, sh_ptr{ptr} {
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {"(T*) created\n"}); 
     ++common_shared_counter; 
 #endif
@@ -39,7 +39,7 @@ shared_ptr<T>::shared_ptr(T* ptr): sh_data{new SharedData()}, sh_ptr{ptr} {
 template<typename T>
 shared_ptr<T>::shared_ptr(const shared_ptr& sh): sh_data{sh.sh_data}, sh_ptr{sh.sh_ptr} {
     ++(*sh_data);
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {"(const sh_ptr&) copied\n"}); 
     ++common_shared_counter; 
 #endif
@@ -63,7 +63,7 @@ shared_ptr<T>& shared_ptr<T>::operator=(const shared_ptr& sh) {
             ++(*sh_data);   
         }
     }
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {" =(sh_ptr) copied\n"});  
 #endif
     return *this;
@@ -73,7 +73,7 @@ template<typename T>
 shared_ptr<T>::shared_ptr(shared_ptr&& sh): sh_data{sh.sh_data}, sh_ptr{sh.sh_ptr} {
     sh.sh_ptr = nullptr;
     sh.sh_data = nullptr;
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {"(sh_ptr&&) moved\n"}); 
     ++common_shared_counter; 
 #endif
@@ -99,7 +99,7 @@ shared_ptr<T>& shared_ptr<T>::operator=(shared_ptr&& sh) {
             sh.sh_data = nullptr;
         }
     }
-#ifdef TEST_ON 
+#ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {" =(sh_ptr) moved\n"});  
 #endif
     return *this;
@@ -114,13 +114,13 @@ shared_ptr<T>::~shared_ptr() {
             delete sh_data;
             sh_ptr = nullptr;
             sh_data = nullptr;
-#ifdef TEST_ON
+#ifdef SHARED_TEST
     shared_destroyed_marker = true;
 #endif
         }
     }
 
-#ifdef TEST_ON
+#ifdef SHARED_TEST
     if (shared_destroyed_marker) {
         --common_shared_counter;
         tests::informator.PrintMess(s3, {"(T) destroyed\t\t--- counter: ", 
@@ -129,7 +129,7 @@ shared_ptr<T>::~shared_ptr() {
         shared_destroyed_marker = false;                             
     } else {
         --common_shared_counter;
-        tests::informator.PrintMess(s3, {"() destroyed\t\t--- counter: ", 
+        tests::informator.PrintMess(s3, {"() destroyed\t--- counter: ", 
                                     std::to_string(common_shared_counter).c_str(),
                                     "\n"}); 
     }
@@ -145,6 +145,16 @@ T& shared_ptr<T>::operator*() const { return *sh_ptr; }
 
 template<typename T>
 T* shared_ptr<T>::operator->() const { return sh_ptr; }
+
+template<typename T>
+bool shared_ptr<T>::operator==(const shared_ptr& other) const { 
+    return (sh_ptr == other.sh_ptr);
+}
+
+template<typename T>
+bool shared_ptr<T>::operator!=(const shared_ptr& other) const { 
+    return !(sh_ptr == other.sh_ptr);
+}
 
 template<typename T>
 shared_ptr<T>::operator bool() const { return (sh_ptr != nullptr); }

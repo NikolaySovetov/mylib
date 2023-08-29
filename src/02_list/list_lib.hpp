@@ -29,22 +29,23 @@ public:
     void pop_back(const T& obj);
     void pop_back(T&& obj);
     shared_ptr<ListNode<T>> begin() const;
-    T* end() const;
-    const T* first() const;
+    shared_ptr<ListNode<T>> end() const;
+    T* front() const;
     bool empty() const;
     const size_t size() const;
-
+        
     class iterator {
     private:
         shared_ptr<ListNode<T>> current_node;
 
     public:
         iterator();
-        iterator(const shared_ptr<ListNode<T>>&);
-        iterator& operator=(const shared_ptr<ListNode<T>>&);
-        iterator(shared_ptr<ListNode<T>>&&) = delete;
-        iterator& operator=(shared_ptr<ListNode<T>>&&) = delete;
-        const shared_ptr<ListNode<T>>& operator++();  
+        iterator(shared_ptr<ListNode<T>>);
+        T* operator++();
+        T* operator++(int);
+        T* operator->();
+        bool operator==(const shared_ptr<ListNode<T>>&);  
+        bool operator!=(const shared_ptr<ListNode<T>>&);  
     };
 };
 

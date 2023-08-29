@@ -1,7 +1,8 @@
-#include "configured/configured.h"
+//#include "unique_configured.h"
+#include "unique_config.hpp"
 #include "unique_ptr_lib.hpp"
 
-#ifdef TEST_ON
+#ifdef UNIQUE_TEST
 #include "fortests.hpp" 
     mylib::tests::MsSettings s2{mylib::tests::Color::cyan, "  >> unique"};
 #endif
@@ -10,14 +11,14 @@ namespace mylib {
 
 template<typename T>
 unique_ptr<T>::unique_ptr(): uniq_ptr{nullptr} {
-#ifdef TEST_ON 
+#ifdef UNIQUE_TEST 
     tests::informator.PrintMess(s2, {"() created\n"}); 
 #endif
 }
 
 template<typename T>
 unique_ptr<T>::unique_ptr(T* ptr): uniq_ptr{ptr} {
-#ifdef TEST_ON 
+#ifdef UNIQUE_TEST 
     tests::informator.PrintMess(s2, {"(T*) created\n"}); 
 #endif
 }
@@ -26,7 +27,7 @@ template<typename T>
 unique_ptr<T>::unique_ptr(unique_ptr&& u) {
     uniq_ptr = u.uniq_ptr;
     u.uniq_ptr = nullptr;
-#ifdef TEST_ON 
+#ifdef UNIQUE_TEST 
     tests::informator.PrintMess(s2, {"(unique_ptr&&) moved\n"}); 
 #endif
 }
@@ -38,7 +39,7 @@ unique_ptr<T>& unique_ptr<T>::operator=(unique_ptr&& u) {
         uniq_ptr = u.uniq_ptr;
         u.uniq_ptr = nullptr;
     }
-#ifdef TEST_ON 
+#ifdef UNIQUE_TEST 
     tests::informator.PrintMess(s2, {"=(unique_ptr&&) moved\n"}); 
 #endif
     return *this;
@@ -48,7 +49,7 @@ template<typename T>
 unique_ptr<T>::~unique_ptr() {
     delete uniq_ptr;
     uniq_ptr = nullptr;
-#ifdef TEST_ON 
+#ifdef UNIQUE_TEST 
     tests::informator.PrintMess(s2, {"() destroyed\n"}); 
 #endif
 }
