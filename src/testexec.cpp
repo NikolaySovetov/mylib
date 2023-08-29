@@ -8,7 +8,7 @@
 
 int main()  {
 
-/*     mylib::tests::informator.PrintMess(mylib::tests::Color::green, ">>> ",
+/*  mylib::tests::informator.PrintMess(mylib::tests::Color::green, ">>> ",
                                        {"Hello", " ", "world" , "!!!", "\n"});
 
 
@@ -28,17 +28,18 @@ int main()  {
     std::cout << "Name of Person is " << sh_p5->GetName() << '\n';
  */     
 
-/*     mylib::list<mylib::tests::Person> list;
-    std::cout << list.first() << '\n';
-
+    mylib::list<mylib::tests::Person> list;
     list.pop_back(mylib::tests::Person{"Nik"});
     list.push_back(mylib::tests::Person{"Bob"});
     list.push_back(mylib::tests::Person{"Tom"});
     list.pop_back(mylib::tests::Person{"Ira"});
     list.pop_back(mylib::tests::Person{"Vika"});
     list.pop_back(mylib::tests::Person{"Anna"});
+    
+    mylib::list<int>::iterator it;
 
-    std::cout << "First node: " << list.first()->GetName() << '\n';
+
+/*  std::cout << "First node: " << list.first()->GetName() << '\n';
 
 
     mylib::list<int> int_list;
@@ -67,19 +68,18 @@ int main()  {
    std::cout << "First name is " << list02.first()->GetName() << '\n';
  */      
  
-//   mylib::tests::Person nik{"Nik"};
-//   mylib::tests::Person ira{"Ira"};
+/*  mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
+     {mylib::tests::Person{"Nik"}, mylib::tests::Person{"Ira"}};
+  //mylib::pair<mylib::tests::Person, mylib::tests::Person> p2;
+  
+  auto person = p1.first();
+  mylib::tests::Person vera{"Vera"};
+  *(person) = vera; 
+ */    
 
-   mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
-      {mylib::tests::Person{"Nik"}, mylib::tests::Person{"Ira"}};
 
-   mylib::pair<mylib::tests::Person, mylib::tests::Person> p2;
-   p2 = std::move(p1);
 
-   std::cout << "First name is " << p2.first()->GetName() << '\n';      
-   std::cout << "Second name is " << p2.second()->GetName() << '\n';
-   
    std::cout << "------------------\n";
-   
+
    return 0;
 }

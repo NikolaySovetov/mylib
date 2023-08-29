@@ -1,6 +1,6 @@
 #include "configured/configured.h"
 #include "list_lib.hpp"
-#include "shared_ptr.hpp"
+//#include "shared_ptr.hpp"
 
 #ifdef TEST_ON
 #include "fortests.hpp"
@@ -17,19 +17,19 @@ struct ListNode {
 
 template<typename T>
 struct ListData {
-    size_t m_counter;
+    size_t m_size;
     shared_ptr<ListNode<T>> m_first;
     shared_ptr<ListNode<T>> m_last;
 
     ListData(const T& obj): m_first{new ListNode<T>{obj}},
-                            m_last{}, m_counter{1} {
+                            m_last{}, m_size{1} {
 #ifdef TEST_ON 
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListData(T&) created\n"});
 #endif
     }
     ListData(T&& obj): m_first{new ListNode<T>{std::move(obj)}},
-                       m_last{}, m_counter{1} {
+                       m_last{}, m_size{1} {
 #ifdef TEST_ON 
     tests::informator.PrintMess(mylib::tests::Color::black, 
                                 "    >> ", {"ListData(T&&) created\n"});
@@ -37,42 +37,42 @@ struct ListData {
     }
 
     void push_back(const T& obj) {
-        if (m_counter == 1) {
+        if (m_size == 1) {
             m_first->m_next = {new ListNode<T>{obj}};
             m_last = m_first->m_next;
-            ++m_counter;
+            ++m_size;
         } else {
             mylib::shared_ptr<ListNode<T>> ptr {new ListNode<T>{obj}};
             m_last->m_next = ptr;
             m_last = std::move(ptr);
-            ++m_counter;
+            ++m_size;
         }
     } 
     void push_back(T&& obj) {
-        if (m_counter == 1) {
+        if (m_size == 1) {
             m_first->m_next = {new ListNode<T>{std::move(obj)}};
             m_last = m_first->m_next;
-            ++m_counter;
+            ++m_size;
         } else {
             mylib::shared_ptr<ListNode<T>> ptr {new ListNode<T>{std::move(obj)}};
             m_last->m_next = ptr;
             m_last = std::move(ptr);
-            ++m_counter;
+            ++m_size;
         }
     } 
     void pop_back(const T& obj) {
         auto temp = m_first;
         m_first = {new ListNode<T>{obj}};
         m_first->m_next = std::move(temp);
-        ++m_counter;
+        ++m_size;
     }
     void pop_back(T&& obj) {
         auto temp = m_first;
         m_first = {new ListNode<T>{std::move(obj)}};
         m_first->m_next = std::move(temp);
-        ++m_counter;
+        ++m_size;
     }
-    size_t counter() const { return m_counter; }
+    size_t counter() const { return m_size; }
 };
 
 template<typename T>
@@ -84,7 +84,7 @@ list<T>::list(): list_data{} {
 
 template<typename T>
 list<T>::list(const T& obj): list_data{new ListData<T>{obj}} {
-    list_data->m_counter = 1;
+    list_data->m_size = 1;
 #ifdef TEST_ON 
     tests::informator.PrintMess(s4, {"(const T&) created\n"}); 
 #endif
@@ -92,7 +92,7 @@ list<T>::list(const T& obj): list_data{new ListData<T>{obj}} {
 
 template<typename T>
 list<T>::list(T&& obj): list_data{new ListData<T>{std::move(obj)}} {
-    list_data->m_counter = 1;
+    list_data->m_size = 1;
 #ifdef TEST_ON 
     tests::informator.PrintMess(s4, {"(T&&) created\n"}); 
 #endif
@@ -194,17 +194,56 @@ const T* list<T>::first() const {
 }
 
 template<typename T>
+shared_ptr<ListNode<T>> list<T>::begin() const {
+    if (!list_data) {
+        return nullptr;
+    }
+    return list_data->m_first;
+}
+
+template<typename T>
+T* list<T>::end() const {
+    return nullptr;
+}
+
+template<typename T>
 bool list<T>::empty() const {
     return !list_data;
 }
 
 template<typename T>
-const size_t list<T>::counter() const {
+const size_t list<T>::size() const {
     if (!list_data) {
         return 0;
     }
-    return list_data->m_counter;
+    return list_data->m_size;
 }
+
+
+
+
+// *** iterator ***
+#ifdef TEST_ON
+    mylib::tests::MsSettings s4_1 {mylib::tests::Color::black, "    >> iterator"};
+#endif
+
+template<typename T>
+list<T>::iterator::iterator() {
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s4_1, {"() created\n"}); 
+#endif
+}
+
+template<typename T>
+list<T>::iterator::iterator(const shared_ptr<ListNode<T>>& node)
+: current_node{list.begin()} {
+    
+#ifdef TEST_ON 
+    tests::informator.PrintMess(s4_1, {"() created\n"}); 
+#endif
+}
+
+
 
 
 }   // mylib
