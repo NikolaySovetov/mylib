@@ -38,7 +38,9 @@ shared_ptr<T>::shared_ptr(T* ptr): sh_data{new SharedData()}, sh_ptr{ptr} {
 
 template<typename T>
 shared_ptr<T>::shared_ptr(const shared_ptr& sh): sh_data{sh.sh_data}, sh_ptr{sh.sh_ptr} {
-    ++(*sh_data);
+    if (sh_data) {
+        ++(*sh_data);
+    }
 #ifdef SHARED_TEST 
     tests::informator.PrintMess(s3, {"(const sh_ptr&) copied\n"}); 
     ++common_shared_counter; 
@@ -60,7 +62,9 @@ shared_ptr<T>& shared_ptr<T>::operator=(const shared_ptr& sh) {
             }
             sh_ptr = sh.sh_ptr;
             sh_data = sh.sh_data;
-            ++(*sh_data);   
+            if (sh_data) {
+                ++(*sh_data);   
+            }
         }
     }
 #ifdef SHARED_TEST 

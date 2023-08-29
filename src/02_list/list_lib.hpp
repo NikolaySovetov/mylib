@@ -5,9 +5,6 @@
 namespace mylib {
 
 template<typename T>
-struct ListNode;
-
-template<typename T>
 struct ListData;
 
 template<typename T>
@@ -28,25 +25,14 @@ public:
     void push_back(T&& obj);
     void pop_back(const T& obj);
     void pop_back(T&& obj);
-    shared_ptr<ListNode<T>> begin() const;
-    shared_ptr<ListNode<T>> end() const;
     T* front() const;
     bool empty() const;
     const size_t size() const;
+    
+    class iterator;
+    iterator begin() const;
+    iterator end() const;
         
-    class iterator {
-    private:
-        shared_ptr<ListNode<T>> current_node;
-
-    public:
-        iterator();
-        iterator(shared_ptr<ListNode<T>>);
-        T* operator++();
-        T* operator++(int);
-        T* operator->();
-        bool operator==(const shared_ptr<ListNode<T>>&);  
-        bool operator!=(const shared_ptr<ListNode<T>>&);  
-    };
 };
 
 

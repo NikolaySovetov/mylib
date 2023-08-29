@@ -1,6 +1,6 @@
 #include "list_config.hpp"
 #include "list_lib.hpp"
-//#include "shared_ptr.hpp"
+#include <iostream>
 
 #ifdef LIST_TEST
 #include "fortests.hpp"
@@ -194,23 +194,6 @@ T* list<T>::front() const {
 }
 
 template<typename T>
-shared_ptr<ListNode<T>> list<T>::begin() const {
-    if (!list_data) {
-        return shared_ptr<ListNode<T>>();
-    }
-    return list_data->m_first;
-}
-
-template<typename T>
-shared_ptr<ListNode<T>> list<T>::end() const {
-//    if (!list_data) {
-//        return shared_ptr<ListNode<T>>();
-//    }
-    //return list_data->m_last;
-    return nullptr;
-}
-
-template<typename T>
 bool list<T>::empty() const {
     return !list_data;
 }
@@ -223,6 +206,16 @@ const size_t list<T>::size() const {
     return list_data->m_size;
 }
 
+template<typename T>
+typename list<T>::iterator list<T>::begin() const {
+    return {iterator(list_data->m_first)};
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::end() const {
+    return iterator();
+}
+
 
 // *** iterator ***
 #ifdef LIST_TEST
@@ -230,57 +223,94 @@ const size_t list<T>::size() const {
 #endif
 
 template<typename T>
-list<T>::iterator::iterator() {
-#ifdef LIST_TEST 
-    tests::informator.PrintMess(s4_1, {"() created\n"}); 
-#endif
-}
+class list<T>::iterator {
+private:
+    shared_ptr<ListNode<T>> m_itnode;
 
-template<typename T>
-list<T>::iterator::iterator(shared_ptr<ListNode<T>> node) {
-   current_node = node;
+public:
+    iterator() {
 
 #ifdef LIST_TEST 
     tests::informator.PrintMess(s4_1, {"() created\n"}); 
 #endif
-}
-
-template<typename T>
-T* list<T>::iterator::operator++() {
-    current_node = current_node->m_next;
-    if (!current_node) {
-        return nullptr;
     }
-    return &(current_node->object);
-}  
-
-template<typename T>
-T* list<T>::iterator::operator++(int) {
-    auto temp = current_node;
-    current_node = current_node->m_next;
-    if (!temp) {
-        return nullptr;
+    iterator(const shared_ptr<ListNode<T>>& node): m_itnode{node} {
+#ifdef LIST_TEST 
+    tests::informator.PrintMess(s4_1, {"(list_node&) created\n"}); 
+#endif
     }
-    return &(temp->object);
-}  
 
-template<typename T>
-T* list<T>::iterator::operator->() {
-    if (!current_node) {
-        return nullptr;
+    iterator(const iterator& other) {
+        m_itnode = other.m_itnode;
+#ifdef LIST_TEST 
+    tests::informator.PrintMess(s4_1, {"(&) created\n"}); 
+#endif
     }
-    return &(current_node->object);
-}  
+    iterator& operator=(const iterator& other) {
+        if (this != &other) {
+            m_itnode.~shared_ptr();
+            m_itnode = other.m_itnode;
+        }
+#ifdef LIST_TEST 
+    tests::informator.PrintMess(s4_1, {"=(&) created\n"}); 
+#endif
+        return *this;
+    }
 
-template<typename T>
-bool list<T>::iterator::operator==(const shared_ptr<ListNode<T>>& node) {
-    return (current_node == node);
-}  
+    iterator(iterator&& other) {
+        m_itnode = std::move(other.m_itnode);
+#ifdef LIST_TEST 
+    tests::informator.PrintMess(s4_1, {"(&&) moved\n"}); 
+#endif
+    }
+    iterator& operator=(iterator&& other) {
+        if (this != &other) {
+            m_itnode.~shared_ptr();
+            m_itnode = std::move(other.m_itnode);
+        }
+#ifdef LIST_TEST 
+    tests::informator.PrintMess(s4_1, {"=(&&) moved\n"}); 
+#endif
+        return *this;
+    }
 
-template<typename T>
-bool list<T>::iterator::operator!=(const shared_ptr<ListNode<T>>& node) {
-    return (current_node != node);
-}  
+    ~iterator() {
+
+#ifdef LIST_TEST 
+    tests::informator.PrintMess(s4_1, {"() destroyed\n"}); 
+#endif
+    }
+
+    T* operator++() { 
+        m_itnode = m_itnode->m_next;
+        if (!m_itnode) {
+            return nullptr;
+        }
+        return &(m_itnode->object);    
+    }
+    T* operator++(int) {
+        if (!m_itnode) {
+            return nullptr;
+        }
+        auto temp = m_itnode;
+        m_itnode = m_itnode->m_next;
+        return &(temp->object);
+    }
+    T* operator->() {
+        if (!m_itnode) {
+            return nullptr;
+        }
+        return &(m_itnode->object);
+    }
+
+    bool operator==(const iterator& other) {
+        return (m_itnode == other.m_itnode);
+    }
+    bool operator!=(const iterator& other) {
+        return (m_itnode != other.m_itnode);
+    }
+
+};
 
 
 }   // mylib
