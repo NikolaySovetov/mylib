@@ -20,7 +20,7 @@ public:
     list& operator=(const list&);
     list(list&&);
     list& operator=(list&&);
-    ~list() = default;
+    ~list();
     void push_back(const T& obj);
     void push_back(T&& obj);
     void pop_back(const T& obj);
@@ -31,8 +31,7 @@ public:
     
     class iterator;
     iterator begin() const;         // need exeption if list_data is empty
-    const iterator& end() const;    // need exeption if list_data is empty
-        
+    iterator end() const;          // need exeption if list_data is empty     
 };
 
 

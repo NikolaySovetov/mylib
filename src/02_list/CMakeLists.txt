@@ -1,9 +1,15 @@
 add_library(list list_lib.cpp)
 
 set(LIST_TEST ON)
+set(LIST_TEST_ITERATOR ON)
+
+if (NOT ${LIST_TEST})
+    set(LIST_TEST_ITERATOR OFF)
+endif()
 
 if (${DISABLE_ALL_TESTS})
     set(LIST_TEST OFF)
+    set(LIST_TEST_ITERATOR OFF)
 endif()
 
 configure_file(list_config.h.in list_config.hpp)

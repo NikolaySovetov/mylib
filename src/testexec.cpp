@@ -83,12 +83,19 @@ int main()  {
   *(person) = vera; 
  */    
 
-   mylib::list<int> list;
-   list.push_back(101); 
-   list.push_back(102); 
-   list.push_back(103); 
-   list.push_back(104); 
+   mylib::tests::Person nik {"Nik"};
 
+   mylib::list<mylib::tests::Person> list;
+   list.push_back(nik); 
+   list.pop_back(mylib::tests::Person{"Bob"}); 
+   list.push_back(mylib::tests::Person{"Tom"}); 
+   list.pop_back(mylib::tests::Person{"Jack"}); 
+
+   for (auto it = list.begin(); it != list.end(); ++it) {
+      std::cout << it->GetName() << '\n';
+   }
+   std::cout << std::endl;
+   
 
    std::cout << "------------------\n";
 

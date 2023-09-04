@@ -1,1 +1,2 @@
 #cmakedefine LIST_TEST
+#cmakedefine LIST_TEST_ITERATOR
