@@ -5,12 +5,12 @@
 namespace mylib {
 
 template<typename T>
-struct ListData;
+struct list_data_type;
 
 template<typename T>
 class list {
 private:
-    unique_ptr<ListData<T>> list_data;
+    list_data_type<T> list_data;
 
 public:
     list();
@@ -20,7 +20,7 @@ public:
     list& operator=(const list&);
     list(list&&);
     list& operator=(list&&);
-    ~list();
+    ~list() = default;
     void push_back(const T& obj);
     void push_back(T&& obj);
     void pop_back(const T& obj);
@@ -30,8 +30,8 @@ public:
     const size_t size() const;
     
     class iterator;
-    iterator begin() const;
-    iterator end() const;
+    iterator begin() const;         // need exeption if list_data is empty
+    const iterator& end() const;    // need exeption if list_data is empty
         
 };
 

@@ -28,7 +28,7 @@ int main()  {
     std::cout << "Name of Person is " << sh_p5->GetName() << '\n';
  */     
 
-   mylib::list<mylib::tests::Person> list;
+/*    mylib::list<mylib::tests::Person> list;
    list.push_back(mylib::tests::Person{"Nik"});
    list.push_back(mylib::tests::Person{"Bob"});
    list.push_back(mylib::tests::Person{"Tom"});
@@ -38,12 +38,12 @@ int main()  {
 
    std::cout << "******************\n";    
 
-   mylib::list<mylib::tests::Person>::iterator it{list.begin()};
+   //mylib::list<mylib::tests::Person>::iterator it{list.begin()};
 
-   for (it; it != list.end(); it++) {
+   for (auto it = list.begin(); it != list.end(); ++it) {
       std::cout << it->GetName() << ' ';
    }
-   std::cout << std::endl;
+   std::cout << std::endl; */
 
 /*  std::cout << "First node: " << list.first()->GetName() << '\n';
 
@@ -82,6 +82,12 @@ int main()  {
   mylib::tests::Person vera{"Vera"};
   *(person) = vera; 
  */    
+
+   mylib::list<int> list;
+   list.push_back(101); 
+   list.push_back(102); 
+   list.push_back(103); 
+   list.push_back(104); 
 
 
    std::cout << "------------------\n";
