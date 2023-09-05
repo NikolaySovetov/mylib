@@ -83,21 +83,49 @@ int main()  {
   *(person) = vera; 
  */    
 
-   mylib::tests::Person nik {"Nik"};
-
    mylib::list<mylib::tests::Person> list;
-   list.push_back(nik); 
-   list.pop_back(mylib::tests::Person{"Bob"}); 
+   list.push_back(mylib::tests::Person{"Nik"}); 
+   list.push_back(mylib::tests::Person{"Bob"}); 
    list.push_back(mylib::tests::Person{"Tom"}); 
-   list.pop_back(mylib::tests::Person{"Jack"}); 
+   list.push_back(mylib::tests::Person{"Jack"}); 
+   std::cout << "------------------\n";
 
-   for (auto it = list.begin(); it != list.end(); ++it) {
-      std::cout << it->GetName() << '\n';
+   for (const auto& it : list) {
+      //it.SetName("New " + it.GetName());
+      std::cout << it.GetName() << ", ";
    }
-   std::cout << std::endl;
-   
+   std::cout << "------------------\n";
+
+   for (auto& it : list) {
+      it.SetName("New " + it.GetName());
+      std::cout << it.GetName() << ", ";
+   }
+   std::cout << "------------------\n";
+
+   //mylib::list<mylib::tests::Person> list1;
+   //list1  = std::move(list);
+
+/*    auto list1 = list;
+   mylib::list<mylib::tests::Person> list1;
+   list1.push_back(mylib::tests::Person{"Nik1"}); 
+   list1.push_back(mylib::tests::Person{"Bob1"}); 
+   list1.push_back(mylib::tests::Person{"Tom1"}); 
+   list1.push_back(mylib::tests::Person{"Jack1"}); 
 
    std::cout << "------------------\n";
+   list1 = list;
+ */
+/*    for (auto it {list.begin()}; it != list.end(); ++it) {
+      std::cout << it->GetName() << '\n';
+   }
+   std::cout << "------------------\n";
+   
+   for (auto it {list.begin()}; it != list.end(); ++it) {
+      std::cout << it->GetName() << '\n';
+   }
+ */
+   std::cout << "------------------\n";
+
 
    return 0;
 }

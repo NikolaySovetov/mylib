@@ -162,6 +162,10 @@ const std::string& Person::GetName() const {
     return m_name;
 }
 
+void Person::SetName(const std::string& name) {
+    m_name = name;
+}
+
 
 }   //tests    
 }   //mylib
