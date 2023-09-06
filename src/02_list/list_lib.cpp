@@ -19,11 +19,16 @@ template<typename T>
 struct list_node_type {
     T object;
     list_node_type<T>* next_node;
+    list_node_type<T>* prev_node;
 
 public:
-    list_node_type(T&& obj): object{(std::move(obj))}, next_node{nullptr} {
+    list_node_type(T&& obj): object{(std::move(obj))}, 
+                             next_node{nullptr},
+                             prev_node{nullptr} {
     }
-    list_node_type(const T& obj): object{obj}, next_node{nullptr} {
+    list_node_type(const T& obj): object{obj}, 
+                                  next_node{nullptr},
+                                  prev_node{nullptr} {
     }
 };
 
@@ -218,30 +223,61 @@ public:
             ++size;
         } else if (size == 1) {
             first_node->next_node = new_node;
+            new_node->prev_node = first_node;
             last_node = new_node;
             ++size;
         } else {
             auto temp = last_node;
             temp->next_node = new_node;
+            new_node->prev_node = temp;
             last_node = new_node; 
             ++size;
         }
     }
-    inline void pop_back(list_node_type<T>* new_node) {
+    inline void push_front(list_node_type<T>* new_node) {
         if (size == 0) {
             first_node = new_node;
-            first_node->next_node = nullptr;
             ++size;
         } else if (size == 1) {
             last_node = first_node;    
             first_node = new_node;
             first_node->next_node = last_node;
+            last_node->prev_node = first_node;    
             ++size;
         } else {
             new_node->next_node = first_node;
+            first_node->prev_node = new_node;
             first_node = new_node; 
             ++size;
         }
+    }
+    inline void pop_back() {
+        if (size == 0)
+            return;
+        if (size == 1) {
+            delete first_node;
+            first_node = nullptr;
+            --size;
+        } else {
+            last_node = last_node->prev_node;
+            delete last_node->next_node;
+            last_node->next_node = nullptr;
+            --size;
+        }    
+    }
+    inline void pop_front() {
+        if (size == 0)
+            return;
+        if (size == 1) {
+            delete first_node;
+            first_node = nullptr;
+            --size;
+        } else {
+            first_node = first_node->next_node;
+            delete first_node->prev_node;
+            first_node->prev_node = nullptr;
+            --size;
+        }    
     }
 };
 
@@ -349,19 +385,29 @@ void list<T>::push_back(T&& obj) {
 }
 
 template<typename T>
-void list<T>::pop_back(const T& obj) {
+void list<T>::push_front(const T& obj) {
     list_node_type<T>* new_node = new  list_node_type<T>(obj);
     if (!new_node) 
         throw std::runtime_error("exception from \"list<T>::pop_back(const T&)\"");    
-    list_data.pop_back(new_node);
+    list_data.push_front(new_node);
 }
 
 template<typename T>
-void list<T>::pop_back(T&& obj) {
+void list<T>::push_front(T&& obj) {
     list_node_type<T>* new_node = new  list_node_type<T>(std::move(obj));
     if (!new_node) 
         throw std::runtime_error("exception from \"list<T>::pop_back(T&&)\"");    
-    list_data.pop_back(new_node);
+    list_data.push_front(new_node);
+}
+
+template<typename T>
+void list<T>::pop_back() {
+    list_data.pop_back();
+}
+
+template<typename T>
+void list<T>::pop_front() {
+    list_data.pop_front();
 }
 
 template<typename T>

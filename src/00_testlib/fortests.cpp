@@ -40,27 +40,27 @@ void PrintC::PrintMess(const std::vector<const char*>& v) const {
 
     switch (m_color) {
     case Color::black :
-        std::cout << "\033[30m"; break;       
+        std::cout << "\033[0;30m"; break;       
     case Color::red :
-        std::cout << "\033[31m"; break;
+        std::cout << "\033[0;31m"; break;
     case Color::green :
-        std::cout << "\033[32m"; break;
+        std::cout << "\033[0;32m"; break;
     case Color::yellow :
-        std::cout << "\033[33m"; break;
+        std::cout << "\033[0;33m"; break;
     case Color::blue :
-        std::cout << "\033[34m"; break;
+        std::cout << "\033[0;34m"; break;
     case Color::magenta :
-        std::cout << "\033[35m"; break;
+        std::cout << "\033[0;35m"; break;
     case Color::cyan :
-        std::cout << "\033[36m"; break;
+        std::cout << "\033[0;36m"; break;
     case Color::white :
-        std::cout << "\033[37m"; break;
+        std::cout << "\033[0;37m"; break;
     default:
         break;
     }    
 
     std::cout << m_marker;
-    for (const auto word: v) {
+    for (const auto& word: v) {
         std::cout << word;
     }
     std::cout << "\033[0m";

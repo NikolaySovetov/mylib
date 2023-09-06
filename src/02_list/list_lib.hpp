@@ -21,8 +21,10 @@ public:
     ~list();
     void push_back(const T& obj);
     void push_back(T&& obj);         
-    void pop_back(const T& obj); 
-    void pop_back(T&& obj);       
+    void push_front(const T& obj);
+    void push_front(T&& obj);         
+    void pop_back(); 
+    void pop_front();       
     T* front() const;
     bool empty() const;
     const size_t size() const;
@@ -35,7 +37,6 @@ public:
     const const_iterator cbegin() const;
     const const_iterator cend() const;     
  
-    
 };
 
 

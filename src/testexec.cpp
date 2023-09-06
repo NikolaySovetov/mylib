@@ -8,7 +8,7 @@
 
 int main()  {
 
-/*  mylib::tests::informator.PrintMess(mylib::tests::Color::green, ">>> ",
+/*    mylib::tests::informator.PrintMess(mylib::tests::Color::green, ">>> ",
                                        {"Hello", " ", "world" , "!!!", "\n"});
 
 
@@ -45,7 +45,7 @@ int main()  {
    }
    std::cout << std::endl; */
 
-/*  std::cout << "First node: " << list.first()->GetName() << '\n';
+/*    std::cout << "First node: " << list.first()->GetName() << '\n';
 
 
     mylib::list<int> int_list;
@@ -74,7 +74,7 @@ int main()  {
    std::cout << "First name is " << list02.first()->GetName() << '\n';
  */      
  
-/*  mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
+/*    mylib::pair<mylib::tests::Person, mylib::tests::Person> p1
      {mylib::tests::Person{"Nik"}, mylib::tests::Person{"Ira"}};
   //mylib::pair<mylib::tests::Person, mylib::tests::Person> p2;
   
@@ -83,15 +83,29 @@ int main()  {
   *(person) = vera; 
  */    
 
-   mylib::list<mylib::tests::Person> list;
+/*    mylib::list<mylib::tests::Person> list;
+   list.pop_back();
+   list.pop_front();
+
    list.push_back(mylib::tests::Person{"Nik"}); 
+   list.pop_back();
+
    list.push_back(mylib::tests::Person{"Bob"}); 
+   list.pop_front();
+
    list.push_back(mylib::tests::Person{"Tom"}); 
    list.push_back(mylib::tests::Person{"Jack"}); 
    std::cout << "------------------\n";
 
-   for (const auto& it : list) {
-      //it.SetName("New " + it.GetName());
+   list.push_front(mylib::tests::Person{"Front Jack"});
+   list.push_front(mylib::tests::Person{"Front Bob"});
+   std::cout << "------------------\n";
+
+   list.pop_front();
+   list.pop_back();
+ */
+
+/*    for (const auto& it : list) {
       std::cout << it.GetName() << ", ";
    }
    std::cout << "------------------\n";
@@ -101,29 +115,21 @@ int main()  {
       std::cout << it.GetName() << ", ";
    }
    std::cout << "------------------\n";
-
-   //mylib::list<mylib::tests::Person> list1;
-   //list1  = std::move(list);
-
-/*    auto list1 = list;
-   mylib::list<mylib::tests::Person> list1;
-   list1.push_back(mylib::tests::Person{"Nik1"}); 
-   list1.push_back(mylib::tests::Person{"Bob1"}); 
-   list1.push_back(mylib::tests::Person{"Tom1"}); 
-   list1.push_back(mylib::tests::Person{"Jack1"}); 
-
-   std::cout << "------------------\n";
-   list1 = list;
  */
-/*    for (auto it {list.begin()}; it != list.end(); ++it) {
-      std::cout << it->GetName() << '\n';
-   }
-   std::cout << "------------------\n";
    
-   for (auto it {list.begin()}; it != list.end(); ++it) {
-      std::cout << it->GetName() << '\n';
-   }
- */
+/*    mylib::pair<int, mylib::tests::Person> p{101, mylib::tests::Person{"Nik"}};
+   std::cout << "key: " << *(p.first()) << ", name: " 
+                        << p.second()->GetName() << ".\n";   
+   
+   std::cout << "------------------\n";
+
+   auto p1 {p};   
+   p = p1;
+   auto p2 {std::move(p)};
+   p = std::move(p2);   
+ */   
+
+
    std::cout << "------------------\n";
 
 

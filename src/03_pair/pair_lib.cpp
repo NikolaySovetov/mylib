@@ -9,13 +9,13 @@
 namespace mylib {
 
 template<typename T1, typename T2>
-struct PairData {
-    T1 m_first;
-    T2 m_second;
+struct pair_data_type {
+    T1 first;
+    T2 second;
 };
 
 template<typename T1, typename T2>
-pair<T1,T2>::pair(): pair_data{} {
+pair<T1,T2>::pair(): pair_data{T1(), T2()} {
 #ifdef PAIR_TEST 
     tests::informator.PrintMess(s5, {"() created\n"}); 
 #endif
@@ -23,7 +23,7 @@ pair<T1,T2>::pair(): pair_data{} {
  
 template<typename T1, typename T2>
 pair<T1,T2>::pair(const T1& first, const T2& second)
-                 : pair_data{new PairData<T1,T2>{first, second}} {
+                 : pair_data{first, second} {
 
 #ifdef PAIR_TEST 
     tests::informator.PrintMess(s5, {"(T1&, T&2) created\n"}); 
@@ -32,7 +32,7 @@ pair<T1,T2>::pair(const T1& first, const T2& second)
 
 template<typename T1, typename T2>
 pair<T1,T2>::pair(T1&& first, T2&& second)
-: pair_data{new PairData<T1,T2>{std::move(first), std::move(second)}} {
+: pair_data{std::move(first), std::move(second)} {
 
 #ifdef PAIR_TEST 
     tests::informator.PrintMess(s5, {"(T1&&, T2&&) created\n"}); 
@@ -41,71 +41,63 @@ pair<T1,T2>::pair(T1&& first, T2&& second)
 
 template<typename T1, typename T2>
 pair<T1,T2>::pair(const pair& other) 
-: pair_data{new PairData<T1,T2>{other.pair_data->m_first, other.pair_data->m_second}} {
+: pair_data{other.pair_data.first, other.pair_data.second} {
 
 #ifdef PAIR_TEST 
-    tests::informator.PrintMess(s5, {"(const pair&) created\n"}); 
+    tests::informator.PrintMess(s5, {"(const pair&) copied\n"}); 
 #endif
 }
 
 template<typename T1, typename T2>
 pair<T1,T2>& pair<T1,T2>::operator=(const pair& other) {
     if (this != &other) {
-        pair_data.~unique_ptr();
-        pair_data = new PairData<T1,T2>
-            {other.pair_data->m_first,
-             other.pair_data->m_second};
+        pair_data.~pair_data_type();
+        pair_data.first = other.pair_data.first;
+        pair_data.second = other.pair_data.second;
     }
-
 #ifdef PAIR_TEST 
-    tests::informator.PrintMess(s5, {"=(const pair&) created\n"}); 
+    tests::informator.PrintMess(s5, {"=(const pair&) copied\n"}); 
 #endif
     return *this;
 }
 
 template<typename T1, typename T2>
-pair<T1,T2>::pair(pair&& other) {
-    pair_data = std::move(other.pair_data);
-
+pair<T1,T2>::pair(pair&& other): pair_data{std::move(other.pair_data.first),
+                                           std::move(other.pair_data.second)}  {
+    //pair_data.first = std::move(other.pair_data.first);
+    //pair_data.second = std::move(other.pair_data.second);
 #ifdef PAIR_TEST 
-    tests::informator.PrintMess(s5, {"(pair&&) created\n"}); 
+    tests::informator.PrintMess(s5, {"(pair&&) moved\n"}); 
 #endif
 }
 
 template<typename T1, typename T2>
 pair<T1,T2>& pair<T1,T2>::operator=(pair&& other) {
     if (this != &other) {
-        pair_data = std::move(other.pair_data);
+    pair_data.first = std::move(other.pair_data.first);
+    pair_data.second = std::move(other.pair_data.second);
     }
-
 #ifdef PAIR_TEST 
-    tests::informator.PrintMess(s5, {"=(pair&&) created\n"}); 
+    tests::informator.PrintMess(s5, {"=(pair&&) moved\n"}); 
 #endif
     return *this;
 }
 
 template<typename T1, typename T2>
 pair<T1,T2>::~pair() {
-
 #ifdef PAIR_TEST 
     tests::informator.PrintMess(s5, {"() destroyed\n"}); 
 #endif
 }
 
 template<typename T1, typename T2>
-T1* pair<T1,T2>::first() const {
-    if (!pair_data) {
-        return nullptr;
-    }
-    return &(pair_data->m_first);
+T1* pair<T1,T2>::first() {
+    return &(pair_data.first);
 }
 
 template<typename T1, typename T2>
-T2* pair<T1,T2>::second() const {
-    if (!pair_data) {
-        return nullptr;
-    }
-    return &(pair_data->m_second);
+T2* pair<T1,T2>::second() {
+    return &(pair_data.second);
 }
 
 

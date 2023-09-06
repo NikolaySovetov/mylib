@@ -1,15 +1,15 @@
 #pragma once
-#include "unique_ptr.hpp"
+//#include "unique_ptr.hpp"
 
 namespace mylib {
 
 template<typename T1, typename T2>
-struct PairData;
+struct pair_data_type;
 
 template<typename T1, typename T2>
 class pair {
 private:
-    unique_ptr<PairData<T1,T2>> pair_data;
+    pair_data_type<T1,T2> pair_data;
 
 public:
     pair();
@@ -20,8 +20,8 @@ public:
     pair(pair&&);
     pair& operator=(pair&&);
     ~pair();
-    T1* first() const;
-    T2* second() const; 
+    T1* first();
+    T2* second(); 
 };
 
 
