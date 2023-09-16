@@ -64,8 +64,6 @@ pair<T1,T2>& pair<T1,T2>::operator=(const pair& other) {
 template<typename T1, typename T2>
 pair<T1,T2>::pair(pair&& other): pair_data{std::move(other.pair_data.first),
                                            std::move(other.pair_data.second)}  {
-    //pair_data.first = std::move(other.pair_data.first);
-    //pair_data.second = std::move(other.pair_data.second);
 #ifdef PAIR_TEST 
     tests::informator.PrintMess(s5, {"(pair&&) moved\n"}); 
 #endif

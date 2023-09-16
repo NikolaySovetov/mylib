@@ -5,6 +5,8 @@
 #include "list.hpp"
 #include "pair.hpp"
 #include <iostream>
+#include <vector>
+
 
 int main()  {
 
@@ -129,9 +131,85 @@ int main()  {
    p = std::move(p2);   
  */   
 
+/*    vector<mylib::shared_ptr<int>> sh_vect;
+   sh_vect.push_back(new int{101});
+   sh_vect.push_back(new int{102});
+   sh_vect.push_back(new int{103});
+   sh_vect.push_back(new int{104});
+   sh_vect.push_back(new int{105});
+ */
 
-   std::cout << "------------------\n";
+/*    NotCopiyed nc;
+   vector<NotCopiyed> nc_v;
+   nc_v.push_back(nc); 
+   nc_v.push_back(nc); 
+   nc_v.push_back(nc); 
+   nc_v.push_back(nc); 
+   nc_v.push_back(nc); 
+ */
+
+/*    vector<mylib::tests::Person> v;
+   v.push_back(mylib::tests::Person{"Nik"});
+   v.push_back(mylib::tests::Person{"Bob"});
+   v.push_back(mylib::tests::Person{"Tom"});
+ */
+
+   NotCopiyed ncpy;
+   vector<NotCopiyed> vec;
+   vec.push_back(ncpy); 
+   vec.push_back(ncpy); 
+   vec.push_back(ncpy); 
+   vec.push_back(ncpy); 
+   vec.push_back(ncpy); 
+   vec.push_back(ncpy); 
+
+
+
+      
+/*    std::vector<mylib::tests::Person> v {mylib::tests::Person{"Nik"},
+                                        mylib::tests::Person{"Tom"},
+                                        mylib::tests::Person{"Bob"}};
+ */
+
+/*    std::cout << "\n------------------\n";
+   size_t length {1};
+
+   unsigned char* p_bytes01 = new unsigned char[sizeof(mylib::tests::Person) * length];  
+   
+   mylib::tests::Person* p_persons01 = reinterpret_cast<mylib::tests::Person*>(p_bytes01);
+   for (size_t i {0}; i < length; ++i) {
+      new (p_persons01 + i) mylib::tests::Person("Nikolai S " + std::to_string(i));
+   }
+   std::cout << "\n******************\n";
+
+   unsigned char* p_bytes02 = new unsigned char[sizeof(mylib::tests::Person) * length * 2];  
+   for (size_t i {0}; i < (sizeof(mylib::tests::Person) * length); ++i) {
+      *(p_bytes02 + i) = *(p_bytes02 + i);
+   }
+
+   mylib::tests::Person* p_persons02 = reinterpret_cast<mylib::tests::Person*>(p_bytes02);
+
+   delete p_bytes01;
+   p_bytes01 = nullptr;
+
+   for (size_t i {0}; i < length; ++i) {
+      (p_persons02 + i)->~Person();
+   }
+
+   delete p_bytes02;
+   p_bytes02 = nullptr;
+ */
+   
+/*    vector<NotCopiyed> v;
+   v.push_back(NotCopiyed());
+   v.push_back(NotCopiyed());
+   v.push_back(NotCopiyed());
+   v.push_back(NotCopiyed());
+   v.push_back(NotCopiyed());
+ */   
 
 
    return 0;
 }
+
+
