@@ -1,9 +1,11 @@
 add_library(fortests fortests.cpp)
 
 set(PERSON_TEST ON)
+set(COPYMOVE_TEST ON)
 
 if (${DISABLE_ALL_TESTS})
     set(PERSON_TEST OFF)
+    set(COPYMOVE_TEST OFF)
 endif()
 
 configure_file(fortsests_config.h.in fortsests_config.hpp)

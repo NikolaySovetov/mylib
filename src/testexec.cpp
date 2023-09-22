@@ -4,9 +4,9 @@
 #include "shared_ptr.hpp"
 #include "list.hpp"
 #include "pair.hpp"
+#include "vector.hpp"
 #include <iostream>
 #include <vector>
-
 
 int main()  {
 
@@ -131,7 +131,7 @@ int main()  {
    p = std::move(p2);   
  */   
 
-/*    vector<mylib::shared_ptr<int>> sh_vect;
+/*    test_vector<mylib::shared_ptr<int>> sh_vect;
    sh_vect.push_back(new int{101});
    sh_vect.push_back(new int{102});
    sh_vect.push_back(new int{103});
@@ -139,8 +139,8 @@ int main()  {
    sh_vect.push_back(new int{105});
  */
 
-/*    NotCopiyed nc;
-   vector<NotCopiyed> nc_v;
+/*    OnlyMoved nc;
+   test_vector<OnlyMoved> nc_v;
    nc_v.push_back(nc); 
    nc_v.push_back(nc); 
    nc_v.push_back(nc); 
@@ -148,25 +148,30 @@ int main()  {
    nc_v.push_back(nc); 
  */
 
-/*    vector<mylib::tests::Person> v;
+/*    test_vector<mylib::tests::Person> v;
    v.push_back(mylib::tests::Person{"Nik"});
    v.push_back(mylib::tests::Person{"Bob"});
    v.push_back(mylib::tests::Person{"Tom"});
  */
 
-   NotCopiyed ncpy;
-   vector<NotCopiyed> vec;
-   vec.push_back(ncpy); 
-   vec.push_back(ncpy); 
-   vec.push_back(ncpy); 
-   vec.push_back(ncpy); 
-   vec.push_back(ncpy); 
-   vec.push_back(ncpy); 
+/*    test_vector<mylib::tests::Movable> copyable_vec;
+   copyable_vec.push_back(mylib::tests::Movable()); 
+   std::cout << "-------\n";
+   copyable_vec.push_back(mylib::tests::Movable()); 
+   std::cout << "-------\n";
+   copyable_vec.push_back(mylib::tests::Movable()); 
+   std::cout << "-------\n";
 
-
-
+   test_vector<mylib::tests::Movable> movable_vec;
+   movable_vec.push_back(mylib::tests::Movable());
+   std::cout << "-------\n";
+   movable_vec.push_back(mylib::tests::Movable());
+   std::cout << "-------\n";
+   movable_vec.push_back(mylib::tests::Movable());
+   std::cout << "-------\n";
+ */
       
-/*    std::vector<mylib::tests::Person> v {mylib::tests::Person{"Nik"},
+/*    std::test_vector<mylib::tests::Person> v {mylib::tests::Person{"Nik"},
                                         mylib::tests::Person{"Tom"},
                                         mylib::tests::Person{"Bob"}};
  */
@@ -199,14 +204,25 @@ int main()  {
    delete p_bytes02;
    p_bytes02 = nullptr;
  */
-   
-/*    vector<NotCopiyed> v;
-   v.push_back(NotCopiyed());
-   v.push_back(NotCopiyed());
-   v.push_back(NotCopiyed());
-   v.push_back(NotCopiyed());
-   v.push_back(NotCopiyed());
- */   
+
+/*    mylib::tests::Person nik {"Nik"};
+   mylib::tests::Person bob {"Bob"};
+   mylib::tests::Person tom {"Tom"};
+   mylib::tests::Person sam {"Sam"};
+
+   mylib::vector<mylib::tests::Person> v;
+//   v.reserve(10);
+   v.push_back(nik);
+   v.push_back(bob);
+   v.push_back(tom);
+   v.push_back(sam);
+ */
+
+   mylib::vector<mylib::tests::Movable> v;
+   v.push_back(mylib::tests::Movable());
+   v.push_back(mylib::tests::Movable());
+   v.push_back(mylib::tests::Movable());
+
 
 
    return 0;

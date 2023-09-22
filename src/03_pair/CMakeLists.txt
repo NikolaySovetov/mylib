@@ -1,6 +1,11 @@
 add_library(pair pair_lib.cpp)
 
 set(PAIR_TEST ON)
+
+if (${DISABLE_ALL_TESTS})
+    set(PAIR_TEST OFF)
+endif()
+
 configure_file(pair_config.h.in pair_config.hpp)
 target_include_directories(pair PUBLIC .
                                 PUBLIC ${CMAKE_CURRENT_BINARY_DIR})

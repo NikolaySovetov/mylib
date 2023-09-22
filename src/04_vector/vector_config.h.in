@@ -1,0 +1,3 @@
+#cmakedefine VECTOR_TEST
+#cmakedefine VECTOR_RESERVE_TEST
+#cmakedefine VECTOR_ITERATOR_TEST

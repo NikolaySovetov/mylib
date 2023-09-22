@@ -1,1 +1,2 @@
 #cmakedefine PERSON_TEST
+#cmakedefine COPYMOVE_TEST

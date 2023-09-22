@@ -94,20 +94,27 @@ void PrintC::PrintMess(const Color& cl, const char* mk,
 
 // *** Person ***
 #ifdef PERSON_TEST 
-    MsSettings s1{Color::yellow, ">> "};
+    MsSettings person_settings{Color::yellow, " -"};
         static int  common_person_counter {0};
 #endif
 
 Person::Person(): m_name{"NONE NAME"} {
 #ifdef PERSON_TEST 
-    informator.PrintMess(s1, {"Person(", m_name.c_str(), ") created\n"}); 
+    informator.PrintMess(person_settings, {"Person(", m_name.c_str(), ") created\n"}); 
     ++common_person_counter;
 #endif
 }
 
 Person::Person(const std::string& name): m_name{name} {
 #ifdef PERSON_TEST 
-    informator.PrintMess(s1, {"Person(", m_name.c_str(), ") created\n"}); 
+    informator.PrintMess(person_settings, {"Person(", m_name.c_str(), ") created\n"}); 
+    ++common_person_counter;
+#endif
+} 
+
+Person::Person(const char* name): m_name{name} {
+#ifdef PERSON_TEST 
+    informator.PrintMess(person_settings, {"Person(", m_name.c_str(), ") created\n"}); 
     ++common_person_counter;
 #endif
 } 
@@ -115,7 +122,7 @@ Person::Person(const std::string& name): m_name{name} {
 Person::Person(const Person& p) {
     m_name = p.m_name;
 #ifdef PERSON_TEST 
-    informator.PrintMess(s1, {"Person(", m_name.c_str(), ") copied\n"}); 
+    informator.PrintMess(person_settings, {"Person(", m_name.c_str(), ") copied\n"}); 
     ++common_person_counter;
 #endif
 } 
@@ -126,7 +133,7 @@ Person& Person::operator=(const Person& p) {
         m_name = p.m_name;
     }
 #ifdef PERSON_TEST 
-    informator.PrintMess(s1, {"operator= Person(", m_name.c_str(), ") copied\n"}); 
+    informator.PrintMess(person_settings, {"operator= Person(", m_name.c_str(), ") copied\n"}); 
 #endif
     return *this;
 } 
@@ -134,7 +141,7 @@ Person& Person::operator=(const Person& p) {
 Person::Person(Person&& p) {
     m_name = std::move(p.m_name);
 #ifdef PERSON_TEST 
-    informator.PrintMess(s1, {"operator= Person(", m_name.c_str(), ") moved\n"}); 
+    informator.PrintMess(person_settings, {"Person(", m_name.c_str(), ") moved\n"}); 
     ++common_person_counter;
 #endif
 } 
@@ -144,7 +151,7 @@ Person& Person::operator=(Person&& p) {
         m_name = std::move(p.m_name);
     }
 #ifdef PERSON_TEST 
-    informator.PrintMess(s1, {"operator= Person(", m_name.c_str(), ") moved\n"}); 
+    informator.PrintMess(person_settings, {"operator= Person(", m_name.c_str(), ") moved\n"}); 
 #endif
     return *this;
 } 
@@ -152,7 +159,7 @@ Person& Person::operator=(Person&& p) {
 Person::~Person() {
 #ifdef PERSON_TEST 
     --common_person_counter; 
-    informator.PrintMess(s1, {"Person(", m_name.c_str(), ") destroyed\t--- counter: ",
+    informator.PrintMess(person_settings, {"Person(", m_name.c_str(), ") destroyed\t--- counter: ",
                          std::to_string(common_person_counter).c_str(),
                          "\n"}); 
 #endif
@@ -166,6 +173,62 @@ void Person::SetName(const std::string& name) {
     m_name = name;
 }
 
+// *** Copyable Movable ***
+#ifdef COPYMOVE_TEST 
+    MsSettings copy_settings{Color::black, " * "};
+    MsSettings move_settings{Color::cyan, " * "};
+#endif
+
+Copyable::Copyable() {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(copy_settings, {"Copyable() created\n"}); 
+#endif
+}
+
+Copyable::Copyable(const Copyable&) {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(copy_settings, {"Copyable(const Copyable&)\n"}); 
+#endif
+}
+
+Copyable& Copyable::operator=(const Copyable&) {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(copy_settings, {"Copyble =(Copyble&)\n"}); 
+#endif
+    return *this;
+}
+
+Copyable::~Copyable() {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(copy_settings, {" Copyble() destroyed\n"}); 
+#endif
+}
+
+// **** ****
+Movable::Movable() {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(move_settings, {"Movable() created\n"}); 
+#endif
+}
+
+Movable::Movable(Movable&&) {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(move_settings, {"Movable(Movable&&)\n"}); 
+#endif
+}
+
+Movable& Movable::operator=(Movable&&) {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(move_settings, {"Movable =(Movable&&)\n"}); 
+#endif
+    return *this;
+}
+
+Movable::~Movable() {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(move_settings, {" Movable() destroyed\n"}); 
+#endif
+}
 
 }   //tests    
 }   //mylib

@@ -5,12 +5,14 @@
 
 #ifdef LIST_TEST
 #include "fortests.hpp"
-    mylib::tests::MsSettings s4 {mylib::tests::Color::magenta, ">> list"};
+    mylib::tests::MsSettings list_set {mylib::tests::Color::magenta, ">> list"};
 #endif
 
-#ifdef LIST_TEST_ITERATOR
-    mylib::tests::MsSettings s41 {mylib::tests::Color::black, " >> list::iterator"};
-    mylib::tests::MsSettings s42 {mylib::tests::Color::black, " >> list::const_iterator"};
+#ifdef LIST_ITERATOR_TEST
+    mylib::tests::MsSettings list_iterator_set01 
+        {mylib::tests::Color::black, " >> list::iterator"};
+    mylib::tests::MsSettings list_iterator_set02 
+        {mylib::tests::Color::black, " >> list::const_iterator"};
 #endif
 
 namespace mylib {
@@ -41,17 +43,17 @@ private:
 public:
     iterator(): iter_node{nullptr} {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"() created\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"() created\n"});
 #endif
     }
     iterator(list_node_type<T>* node): iter_node{node} {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"(*node) created\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"(*node) created\n"});
 #endif
     }
     iterator(const iterator& other): iter_node{other.iter_node} {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"(&) created\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"(&) created\n"});
 #endif
     }
     iterator& operator=(const iterator& other) {
@@ -59,14 +61,14 @@ public:
             iter_node = other.iter_node;
         }
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"=(&) created\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"=(&) created\n"});
 #endif
         return *this;
     }
     iterator(iterator&& other): iter_node{other.iter_node}  {
         other.iter_node = nullptr;
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"(&&) moved\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"(&&) moved\n"});
 #endif
     }
     iterator& operator=(iterator&& other) {
@@ -75,13 +77,13 @@ public:
             other.iter_node = nullptr;
         }
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"=(&&) moved\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"=(&&) moved\n"});
 #endif
         return *this;
     }
     ~iterator() {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s41, {"() destroyed\n"});
+    tests::informator.PrintMess(list_iterator_set01, {"() destroyed\n"});
 #endif        
     }
     
@@ -128,17 +130,17 @@ private:
 public:
     const_iterator(): iter_node{nullptr} {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"() created\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"() created\n"});
 #endif
     }
     const_iterator(list_node_type<T>* node): iter_node{node} {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"(*node) created\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"(*node) created\n"});
 #endif
     }
     const_iterator(const const_iterator& other): iter_node{other.iter_node} {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"(&) created\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"(&) created\n"});
 #endif
     }
     const_iterator& operator=(const const_iterator& other) {
@@ -146,14 +148,14 @@ public:
             iter_node = other.iter_node;
         }
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"=(&) created\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"=(&) created\n"});
 #endif
         return *this;
     }
     const_iterator(const_iterator&& other): iter_node{other.iter_node}  {
         other.iter_node = nullptr;
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"(&&) moved\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"(&&) moved\n"});
 #endif
     }
     const_iterator& operator=(const_iterator&& other) {
@@ -162,13 +164,13 @@ public:
             other.iter_node = nullptr;
         }
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"=(&&) moved\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"=(&&) moved\n"});
 #endif
         return *this;
     }
     ~const_iterator() {
 #ifdef LIST_TEST_ITERATOR 
-    tests::informator.PrintMess(s42, {"() destroyed\n"});
+    tests::informator.PrintMess(list_iterator_set02, {"() destroyed\n"});
 #endif        
     }
     
@@ -195,6 +197,7 @@ public:
 
 };
 
+// *** list ***
 template<typename T>
 const typename list<T>::const_iterator list<T>::cbegin() const {
     return const_iterator(list_data.first_node);
@@ -284,7 +287,7 @@ public:
 template<typename T>
 list<T>::list() {
 #ifdef LIST_TEST 
-    tests::informator.PrintMess(s4, {"() created\n"});
+    tests::informator.PrintMess(list_set, {"() created\n"});
 #endif
 }
 
@@ -299,7 +302,7 @@ list<T>::list(const list& other): list_data{} {
     }
 
 #ifdef LIST_TEST 
-    tests::informator.PrintMess(s4, {"(&) copied\n"});
+    tests::informator.PrintMess(list_set, {"(&) copied\n"});
 #endif
 }
 
@@ -316,7 +319,7 @@ list<T>& list<T>::operator=(const list& other) {
         }
     }
 #ifdef LIST_TEST 
-    tests::informator.PrintMess(s4, {"=(&) copied\n"});
+    tests::informator.PrintMess(list_set, {"=(&) copied\n"});
 #endif
     return *this;
 }
@@ -330,7 +333,7 @@ list<T>::list(list&& other): list_data{} {
     other.list_data.last_node = nullptr;
     other.list_data.size = 0;
 #ifdef LIST_TEST 
-    tests::informator.PrintMess(s4, {"(&&) movied\n"});
+    tests::informator.PrintMess(list_set, {"(&&) movied\n"});
 #endif
 }
 
@@ -346,7 +349,7 @@ list<T>& list<T>::operator=(list&& other) {
         other.list_data.size = 0;
     }
 #ifdef LIST_TEST 
-    tests::informator.PrintMess(s4, {"=(&&) movied\n"});
+    tests::informator.PrintMess(list_set, {"=(&&) movied\n"});
 #endif
     return *this;
 }
@@ -364,7 +367,7 @@ list<T>::~list() {
         list_data.size = 0;
     }
 #ifdef LIST_TEST 
-    tests::informator.PrintMess(s4, {"() destroyed\n"});
+    tests::informator.PrintMess(list_set, {"() destroyed\n"});
 #endif
 }
 
@@ -426,7 +429,6 @@ template<typename T>
 const size_t list<T>::size() const {
     return list_data.size;
 }
-
 
 }   // mylib
 

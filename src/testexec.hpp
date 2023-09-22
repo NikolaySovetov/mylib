@@ -2,72 +2,39 @@
 #include <iostream>
 #include <type_traits>
 
-/* template<typename T>
-T fun(T&& var) {
-    std::cout << var << '\n';
-    return var;
+//template<typename T>
+template<typename T, typename... Args>
+T* get_ptr(Args&... args) {
+    std::byte* raw_mem = new std::byte[sizeof(T)];
+    T* ptr_obj = reinterpret_cast<T*>(raw_mem);
+    new (ptr_obj) T(std::forward<Args>(args)...);  
+    //new (ptr_obj) T(std::forward<Args>(args...));
+
+    std::cout << sizeof...(args) << '\n';
+
+    return ptr_obj;
 }
 
-template<typename... Args>
-class MyClass{
-public:
-    MyClass(Args... args) {
-        rpush_back(fun(args)...);
-    } 
-    void rpush_back(Args... args) {
-
-    }   
-};
- */
-
-class NotCopiyed {
-public:
-    int value = 101;
-
-public:
-    NotCopiyed() {
-        std::cout << "NotCopiyed()\n";        
-    }
-    NotCopiyed(const NotCopiyed& other) /* = delete; */ {
-        std::cout << "NotCopiyed(const NotCopiyed& )\n";        
-    }
-    NotCopiyed& operator=(const NotCopiyed& other) /* = delete; */  {
-        std::cout << "NotCopiyed=(const NotCopiyed& )\n";        
-        return *this; 
-    }
- 
-    NotCopiyed(NotCopiyed&& other) = delete;   /* {
-        std::cout << "NotCopiyed(NotCopiyed&& )\n";        
-    } */
-    NotCopiyed& operator=(NotCopiyed&& other) /* = delete; */    {
-        std::cout << "NotCopiyed=(NotCopiyed&& )\n";        
-        return *this;
-    } 
-
-     ~NotCopiyed() {
-        std::cout << "~NotCopiyed()\n";        
-    }
-};
 
 template<typename T>
-class vector {
+class test_vector {
 private: 
     T* data;
     size_t size;
     size_t capasity;
 
 public:
-    vector(): data{nullptr}, size{0}, capasity{0} {
+    test_vector(): data{nullptr}, size{0}, capasity{0} {
     }
    
     template<typename... Args> 
-    vector(Args&&... args): data{nullptr}, size{0}, capasity{0} {
+    test_vector(Args&&... args): data{nullptr}, size{0}, capasity{0} {
         //(push_back(std::forward<Args>(args))...) ;
         //std::move_if_noexcept
     }
 
-    ~vector() {
-        std::cout << "****** ~vector() ******\n";
+    ~test_vector() {
+        std::cout << "****** ~test_vector() ******\n";
         for (size_t i {0}; i < capasity; ++i) {
             (data + i)->~T();
         }

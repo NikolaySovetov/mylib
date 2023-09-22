@@ -48,6 +48,7 @@ private:
 public:
     Person();
     Person(const std::string&);
+    Person(const char*);
     Person(const Person&);
     Person& operator=(const Person&);
     Person(Person&&);
@@ -56,6 +57,27 @@ public:
     const std::string& GetName() const;
     void SetName(const std::string&); 
 };
+
+class Movable {
+public:
+    Movable();     
+    Movable(const Movable&) = delete;     
+    Movable& operator=(const Movable&) = delete;     
+    Movable(Movable&&);     
+    Movable& operator=(Movable&&);     
+    ~Movable();     
+};
+
+class Copyable {
+public:
+    Copyable();     
+    Copyable(const Copyable&);     
+    Copyable& operator=(const Copyable&);     
+    Copyable(Movable&&) = delete;     
+    Copyable& operator=(Copyable&&) = delete;     
+    ~Copyable();     
+};
+
 
 }   //tests
 }   //mylib
