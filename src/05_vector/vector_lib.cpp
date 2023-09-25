@@ -286,5 +286,19 @@ size_t vector<T>::capacity() const {
     return vector_data.capacity;
 }
 
+// *** iterator ***
+template<typename T>
+vector<T>::iterator::iterator(T* ptr): base_iterator<T>(ptr) {
+}
+
+template<typename T>
+typename vector<T>::iterator vector<T>::begin() const {
+    return typename vector<T>::iterator(&(this->vector_data.arr[0]));
+}
+
+template<typename T>
+typename vector<T>::iterator vector<T>::end() const {
+    return typename vector<T>::iterator(&(this->vector_data.arr[vector_data.size]));
+}
 
 }   // mylib

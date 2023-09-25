@@ -1,4 +1,5 @@
 #pragma once
+#include "iterator.hpp"
 #include <cstddef>
 #include <initializer_list>
 
@@ -32,7 +33,12 @@ public:
     size_t capacity() const;
     bool empty() const;
 
+    class iterator: virtual public mylib::base_iterator<T>{   
+    public:
+        iterator(T*);
+    };
+    iterator begin() const;
+    iterator end() const;
 };
-
 
 }   // mylib

@@ -2,11 +2,14 @@
 #include "fortests.hpp"
 #include "unique_ptr.hpp"
 #include "shared_ptr.hpp"
+#include "iterator.hpp"
 #include "list.hpp"
 #include "pair.hpp"
 #include "vector.hpp"
 #include <iostream>
 #include <vector>
+#include <typeinfo>
+
 
 int main()  {
 
@@ -179,20 +182,21 @@ int main()  {
    v1.pop_back();
 
    std::cout << "size = " << v1.size() << '\n';
-   std::cout << "cap  = " << v1.capacity() << '\n'; */
+   std::cout << "cap  = " << v1.capacity() << '\n'; */ 
 
-   std::vector<int> v;
-   v.push_back(101);
+   mylib::vector<mylib::tests::Person> v;
+   v.reserve(10);
+   v.emplace_back("Nik");
+   v.emplace_back("Bob");
+   v.emplace_back("Tom");
+   v.emplace_back("Sam");
+   v.emplace_back("Jack");
 
-   std::vector<int>::iterator it_begin;
-   it_begin = v.begin();
-   std::vector<int>::iterator it_end;
-   it_end = v.end();
+   auto v_end {v.end()};
 
-
-
-
-
+   for (auto it {v.begin()}; it != v_end; ++it) {
+      std::cout << it->GetName() << ",   type:" << typeid(it).name() << '\n';
+   }
 
    return 0;
 }
