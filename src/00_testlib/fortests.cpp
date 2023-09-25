@@ -173,60 +173,60 @@ void Person::SetName(const std::string& name) {
     m_name = name;
 }
 
-// *** Copyable Movable ***
+// *** OnlyCopy OnlyMove ***
 #ifdef COPYMOVE_TEST 
     MsSettings copy_settings{Color::black, " * "};
-    MsSettings move_settings{Color::cyan, " * "};
+    MsSettings move_settings{Color::black, " * "};
 #endif
 
-Copyable::Copyable() {
+OnlyCopy::OnlyCopy() {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(copy_settings, {"Copyable() created\n"}); 
-#endif
-}
-
-Copyable::Copyable(const Copyable&) {
-#ifdef COPYMOVE_TEST 
-    informator.PrintMess(copy_settings, {"Copyable(const Copyable&)\n"}); 
+    informator.PrintMess(copy_settings, {"OnlyCopy()\n"}); 
 #endif
 }
 
-Copyable& Copyable::operator=(const Copyable&) {
+OnlyCopy::OnlyCopy(const OnlyCopy&) {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(copy_settings, {"Copyble =(Copyble&)\n"}); 
+    informator.PrintMess(copy_settings, {"OnlyCopy(&)\n"}); 
+#endif
+}
+
+OnlyCopy& OnlyCopy::operator=(const OnlyCopy&) {
+#ifdef COPYMOVE_TEST 
+    informator.PrintMess(copy_settings, {"OnlyCopy =(&)\n"}); 
 #endif
     return *this;
 }
 
-Copyable::~Copyable() {
+OnlyCopy::~OnlyCopy() {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(copy_settings, {" Copyble() destroyed\n"}); 
+    informator.PrintMess(copy_settings, {"~OnlyCopy()\n"}); 
 #endif
 }
 
 // **** ****
-Movable::Movable() {
+OnlyMove::OnlyMove() {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(move_settings, {"Movable() created\n"}); 
+    informator.PrintMess(move_settings, {"OnlyMove()\n"}); 
 #endif
 }
 
-Movable::Movable(Movable&&) {
+OnlyMove::OnlyMove(OnlyMove&&) {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(move_settings, {"Movable(Movable&&)\n"}); 
+    informator.PrintMess(move_settings, {"OnlyMove(&&)\n"}); 
 #endif
 }
 
-Movable& Movable::operator=(Movable&&) {
+OnlyMove& OnlyMove::operator=(OnlyMove&&) {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(move_settings, {"Movable =(Movable&&)\n"}); 
+    informator.PrintMess(move_settings, {"OnlyMove =(&&)\n"}); 
 #endif
     return *this;
 }
 
-Movable::~Movable() {
+OnlyMove::~OnlyMove() {
 #ifdef COPYMOVE_TEST 
-    informator.PrintMess(move_settings, {" Movable() destroyed\n"}); 
+    informator.PrintMess(move_settings, {"~OnlyMove()\n"}); 
 #endif
 }
 

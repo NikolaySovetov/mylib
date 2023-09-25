@@ -58,24 +58,24 @@ public:
     void SetName(const std::string&); 
 };
 
-class Movable {
+class OnlyMove {
 public:
-    Movable();     
-    Movable(const Movable&) = delete;     
-    Movable& operator=(const Movable&) = delete;     
-    Movable(Movable&&);     
-    Movable& operator=(Movable&&);     
-    ~Movable();     
+    OnlyMove();     
+    OnlyMove(const OnlyMove&) = delete;     
+    OnlyMove& operator=(const OnlyMove&) = delete;     
+    OnlyMove(OnlyMove&&);     
+    OnlyMove& operator=(OnlyMove&&);     
+    ~OnlyMove();     
 };
 
-class Copyable {
+class OnlyCopy {
 public:
-    Copyable();     
-    Copyable(const Copyable&);     
-    Copyable& operator=(const Copyable&);     
-    Copyable(Movable&&) = delete;     
-    Copyable& operator=(Copyable&&) = delete;     
-    ~Copyable();     
+    OnlyCopy();     
+    OnlyCopy(const OnlyCopy&);     
+    OnlyCopy& operator=(const OnlyCopy&);     
+    OnlyCopy(OnlyMove&&) = delete;     
+    OnlyCopy& operator=(OnlyCopy&&) = delete;     
+    ~OnlyCopy();     
 };
 
 

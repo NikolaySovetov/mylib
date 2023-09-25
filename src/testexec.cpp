@@ -139,72 +139,6 @@ int main()  {
    sh_vect.push_back(new int{105});
  */
 
-/*    OnlyMoved nc;
-   test_vector<OnlyMoved> nc_v;
-   nc_v.push_back(nc); 
-   nc_v.push_back(nc); 
-   nc_v.push_back(nc); 
-   nc_v.push_back(nc); 
-   nc_v.push_back(nc); 
- */
-
-/*    test_vector<mylib::tests::Person> v;
-   v.push_back(mylib::tests::Person{"Nik"});
-   v.push_back(mylib::tests::Person{"Bob"});
-   v.push_back(mylib::tests::Person{"Tom"});
- */
-
-/*    test_vector<mylib::tests::Movable> copyable_vec;
-   copyable_vec.push_back(mylib::tests::Movable()); 
-   std::cout << "-------\n";
-   copyable_vec.push_back(mylib::tests::Movable()); 
-   std::cout << "-------\n";
-   copyable_vec.push_back(mylib::tests::Movable()); 
-   std::cout << "-------\n";
-
-   test_vector<mylib::tests::Movable> movable_vec;
-   movable_vec.push_back(mylib::tests::Movable());
-   std::cout << "-------\n";
-   movable_vec.push_back(mylib::tests::Movable());
-   std::cout << "-------\n";
-   movable_vec.push_back(mylib::tests::Movable());
-   std::cout << "-------\n";
- */
-      
-/*    std::test_vector<mylib::tests::Person> v {mylib::tests::Person{"Nik"},
-                                        mylib::tests::Person{"Tom"},
-                                        mylib::tests::Person{"Bob"}};
- */
-
-/*    std::cout << "\n------------------\n";
-   size_t length {1};
-
-   unsigned char* p_bytes01 = new unsigned char[sizeof(mylib::tests::Person) * length];  
-   
-   mylib::tests::Person* p_persons01 = reinterpret_cast<mylib::tests::Person*>(p_bytes01);
-   for (size_t i {0}; i < length; ++i) {
-      new (p_persons01 + i) mylib::tests::Person("Nikolai S " + std::to_string(i));
-   }
-   std::cout << "\n******************\n";
-
-   unsigned char* p_bytes02 = new unsigned char[sizeof(mylib::tests::Person) * length * 2];  
-   for (size_t i {0}; i < (sizeof(mylib::tests::Person) * length); ++i) {
-      *(p_bytes02 + i) = *(p_bytes02 + i);
-   }
-
-   mylib::tests::Person* p_persons02 = reinterpret_cast<mylib::tests::Person*>(p_bytes02);
-
-   delete p_bytes01;
-   p_bytes01 = nullptr;
-
-   for (size_t i {0}; i < length; ++i) {
-      (p_persons02 + i)->~Person();
-   }
-
-   delete p_bytes02;
-   p_bytes02 = nullptr;
- */
-
 /*    mylib::tests::Person nik {"Nik"};
    mylib::tests::Person bob {"Bob"};
    mylib::tests::Person tom {"Tom"};
@@ -218,10 +152,45 @@ int main()  {
    v.push_back(sam);
  */
 
-   mylib::vector<mylib::tests::Movable> v;
-   v.push_back(mylib::tests::Movable());
-   v.push_back(mylib::tests::Movable());
-   v.push_back(mylib::tests::Movable());
+/*    mylib::vector<mylib::tests::Person> v;
+   v.push_back(mylib::tests::Person{"Nik"}); 
+   v.push_back(mylib::tests::Person{"Bob"}); 
+   v.push_back(mylib::tests::Person{"Tom"}); 
+   v.emplace_back("Sam");
+
+   std::cout << "-------------------\n";
+
+   mylib::vector<mylib::tests::Person> v1 {std::move(v)};
+   mylib::vector<mylib::tests::Person> v3 = v1;
+ */
+
+/*    mylib::vector<mylib::tests::OnlyMove> v;
+   v.reserve(2);
+   v.emplace_back();      
+   v.emplace_back();      
+   v.emplace_back();      
+   v.emplace_back();
+
+   std::cout << "size = " << v.size() << '\n';
+   std::cout << "cap  = " << v.capacity() << '\n';
+
+   mylib::vector<mylib::tests::OnlyMove> v1 {std::move(v)};
+
+   v1.pop_back();
+
+   std::cout << "size = " << v1.size() << '\n';
+   std::cout << "cap  = " << v1.capacity() << '\n'; */
+
+   std::vector<int> v;
+   v.push_back(101);
+
+   std::vector<int>::iterator it_begin;
+   it_begin = v.begin();
+   std::vector<int>::iterator it_end;
+   it_end = v.end();
+
+
+
 
 
 
