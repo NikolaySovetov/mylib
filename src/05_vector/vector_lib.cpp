@@ -288,7 +288,62 @@ size_t vector<T>::capacity() const {
 
 // *** iterator ***
 template<typename T>
+vector<T>::iterator::iterator(): base_iterator<T>() {
+}
+
+template<typename T>
 vector<T>::iterator::iterator(T* ptr): base_iterator<T>(ptr) {
+}
+
+template<typename T>
+vector<T>::iterator::iterator(const iterator& other): base_iterator<T>(other) {
+}
+
+template<typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator=(const iterator& other) {
+    if (this != &other) {
+        this->it = nullptr;
+        this->it = other.it;
+    }
+    return *this;
+}
+
+template<typename T>
+vector<T>::iterator::iterator(iterator&& other): base_iterator<T>(std::move(other)) {
+}
+
+template<typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator=(iterator&& other) {
+    if (this != &other) {
+        this->it = nullptr;
+        this->it = other.it;
+        other.it = nullptr;
+    }
+    return *this;
+}
+
+template<typename T>
+vector<T>::iterator::~iterator() {
+}
+
+template<typename T>
+void vector<T>::iterator::operator++() {
+    ++(this->it);
+}
+
+template<typename T>
+bool vector<T>::iterator::operator!=(const base_iterator<T>& other) const {
+    return (this->it != other.get());
+}
+
+template<typename T>
+T* vector<T>::iterator::operator->() const {
+    return this->it;
+}
+
+template<typename T>
+T& vector<T>::iterator::operator*() const {
+    return *(this->it);
 }
 
 template<typename T>

@@ -2,14 +2,13 @@
 #include "fortests.hpp"
 #include "unique_ptr.hpp"
 #include "shared_ptr.hpp"
-#include "iterator.hpp"
+#include "base_iterator.hpp"
 #include "list.hpp"
 #include "pair.hpp"
 #include "vector.hpp"
 #include <iostream>
 #include <vector>
 #include <typeinfo>
-
 
 int main()  {
 
@@ -184,7 +183,7 @@ int main()  {
    std::cout << "size = " << v1.size() << '\n';
    std::cout << "cap  = " << v1.capacity() << '\n'; */ 
 
-   mylib::vector<mylib::tests::Person> v;
+/*    mylib::vector<mylib::tests::Person> v;
    v.reserve(10);
    v.emplace_back("Nik");
    v.emplace_back("Bob");
@@ -192,11 +191,19 @@ int main()  {
    v.emplace_back("Sam");
    v.emplace_back("Jack");
 
-   auto v_end {v.end()};
+   mylib::vector<mylib::tests::Person>::iterator it1 (v.begin());
+   mylib::vector<mylib::tests::Person>::iterator it2;
+   it2 = it1;
+   auto it3 {std::move(it1)};
+   mylib::vector<mylib::tests::Person>::iterator it4 (v.begin());
+   it4 = std::move(it2);
+   ++it4; 
 
-   for (auto it {v.begin()}; it != v_end; ++it) {
-      std::cout << it->GetName() << ",   type:" << typeid(it).name() << '\n';
+   auto v_end {v.end()};
+   for (; it4 != v_end; ++it4) {
+      std::cout << it4->GetName() << ",   type:" << typeid(it4).name() << '\n';
    }
+ */
 
    return 0;
 }

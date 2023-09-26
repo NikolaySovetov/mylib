@@ -1,6 +1,6 @@
 #pragma once
+#include "base_iterator.hpp"
 #include <cstddef>
-
 
 namespace mylib {
 
@@ -14,29 +14,25 @@ private:
 
 public:
     list();
-    list(const list&);
-    list& operator=(const list&);
-    list(list&&);
-    list& operator=(list&&);
+    list(size_t size, const T& t = T());
+    list(const std::initializer_list<T>& list);        
+    list(const list& other);
+    list& operator=(const list& other);
+    list(list&& other);
+    list& operator=(list&& other);
     ~list();
-    void push_back(const T& obj);
-    void push_back(T&& obj);         
-    void push_front(const T& obj);
-    void push_front(T&& obj);         
-    void pop_back(); 
-    void pop_front();       
-    T* front() const;
-    bool empty() const;
-    const size_t size() const;
-    
-    class iterator;
-    iterator begin() const;
-    iterator end() const;  
 
-    class const_iterator;
-    const const_iterator cbegin() const;
-    const const_iterator cend() const;     
- 
+    template<typename... Args>
+    void emplace_back(Args&... args);
+    void push_back(const T& arg);
+    void push_back(T&& arg);
+    void front_back(const T& arg);
+    void front_back(T&& arg);
+    void pop_back();
+    void front_back();
+    void reserve(size_t new_cap);
+    size_t size() const;
+    bool empty() const;
 };
 
 

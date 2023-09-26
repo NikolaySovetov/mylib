@@ -1,5 +1,5 @@
 #pragma once
-#include "iterator.hpp"
+#include "base_iterator.hpp"
 #include <cstddef>
 #include <initializer_list>
 
@@ -35,8 +35,20 @@ public:
 
     class iterator: virtual public mylib::base_iterator<T>{   
     public:
+        iterator();
         iterator(T*);
+        iterator(const iterator&);
+        iterator& operator=(const iterator&);
+        iterator(iterator&&);
+        iterator& operator=(iterator&&);
+        ~iterator();
+
+        void operator++() override;
+        bool operator!=(const base_iterator<T>&) const override;
+        T* operator->() const override;
+        T& operator*() const override;
     };
+    
     iterator begin() const;
     iterator end() const;
 };

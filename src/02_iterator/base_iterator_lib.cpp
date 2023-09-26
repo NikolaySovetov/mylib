@@ -1,5 +1,5 @@
 #include "iterator_config.hpp"
-#include "iterator_lib.hpp"
+#include "base_iterator_lib.hpp"
 #include <exception>
 #include <iostream>
 
@@ -77,6 +77,11 @@ base_iterator<T>::~base_iterator() {
 }
 
 template<typename T>
+T* base_iterator<T>::get() const {
+    return it;
+}
+
+/* template<typename T>
 void base_iterator<T>::operator++() {
     ++it;
 }
@@ -95,7 +100,7 @@ template<typename T>
 T& base_iterator<T>::operator*() const {
     return *it;
 }
-
+ */
 
 }   // mylib
 
