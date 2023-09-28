@@ -12,6 +12,7 @@ find_package(Curses REQUIRED )
 add_executable(testexec testexec.cpp)
 
 target_link_libraries(testexec PRIVATE fortests
+                               PRIVATE allocator 
                                PRIVATE unique_ptr
                                PRIVATE shared_ptr
                                PRIVATE base_iterator

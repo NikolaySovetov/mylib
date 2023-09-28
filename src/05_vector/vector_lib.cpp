@@ -3,8 +3,8 @@
 #include <iostream>
 
 #ifdef VECTOR_TEST
-#include "fortests.hpp"
 #include <typeinfo>
+#include "fortests.hpp"
     mylib::tests::MsSettings vector_set {mylib::tests::Color::green, ">> vector"};
 #endif
 
@@ -102,7 +102,7 @@ template<typename T>
 vector<T>::vector() {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {"( type: ", typeid(this->vector_data.arr).name(), " ) created\n"}); 
+        {"( type: ", typeid(T).name(), " ) created\n"}); 
 #endif
 }
 
@@ -110,7 +110,7 @@ template<typename T>
 vector<T>::vector(size_t sz, const T& t) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {"( type: ", typeid(this->vector_data.arr).name(), " ) created\n"}); 
+        {"( type: ", typeid(T).name(), " ) created\n"}); 
 #endif
 
     if (sz != 0) {
@@ -128,7 +128,7 @@ template<typename T>
 vector<T>::vector(const std::initializer_list<T>& list) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {"( std::init_list<T>: ", typeid(this->vector_data.arr).name(), " ) created\n"}); 
+        {"( std::init_list<T>: ", typeid(T).name(), " ) created\n"}); 
 #endif
 
     reserve(list.size());
@@ -143,7 +143,7 @@ template<typename T>
 vector<T>::vector(const vector& other) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {"( &: ", typeid(this->vector_data.arr).name(), " ) copied\n"}); 
+        {"( &: ", typeid(T).name(), " ) copied\n"}); 
 #endif
 
     reserve(other.vector_data.capacity);
@@ -155,7 +155,7 @@ template<typename T>
 vector<T>& vector<T>::operator=(const vector& other) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {" =( &: ", typeid(this->vector_data.arr).name(), " ) copied\n"}); 
+        {" =( &: ", typeid(T).name(), " ) copied\n"}); 
 #endif
 
     if (this != &other) {
@@ -171,7 +171,7 @@ template<typename T>
 vector<T>::vector(vector&& other) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {"( &&: ", typeid(this->vector_data.arr).name(), " ) moved\n"}); 
+        {"( &&: ", typeid(T).name(), " ) moved\n"}); 
 #endif
 
     vector_data.arr = other.vector_data.arr;
@@ -187,7 +187,7 @@ template<typename T>
 vector<T>& vector<T>::operator=(vector<T>&& other) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
-        {" =( &&: ", typeid(this->vector_data.arr).name(), " ) moved\n"}); 
+        {" =( &&: ", typeid(T).name(), " ) moved\n"}); 
 #endif
 
     if (this != &other) {
@@ -209,7 +209,7 @@ vector<T>::~vector() {
 
 #ifdef VECTOR_TEST 
     tests::informator.PrintMess(vector_set, 
-        {"( type: ", typeid(this->vector_data.arr).name(), " ) destroyed\n"}); 
+        {"( type: ", typeid(T).name(), " ) destroyed\n"}); 
 #endif
 }
 
@@ -231,13 +231,13 @@ void vector<T>::emplace_back(Args&... args) {
 }
 
 template<typename T>
-void vector<T>::push_back(const T& arg) {
-    emplace_back(arg);
+void vector<T>::push_back(const T& obj) {
+    emplace_back(obj);
 }
 
 template<typename T>
-void vector<T>::push_back(T&& arg) {
-    emplace_back(arg);
+void vector<T>::push_back(T&& obj) {
+    emplace_back(obj);
 }
 
 template<typename T>

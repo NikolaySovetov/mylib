@@ -1,6 +1,9 @@
 #pragma once
+
+#include "allocator.hpp"
 #include "base_iterator.hpp"
 #include <cstddef>
+#include <initializer_list>
 
 namespace mylib {
 
@@ -13,10 +16,10 @@ private:
     list_data_type<T> list_data;
 
 public:
-    list();
-    list(size_t size, const T& t = T());
-    list(const std::initializer_list<T>& list);        
-    list(const list& other);
+    list(mylib::allocator* alloc = &mylib::def_allocator);
+    list(size_t size, const T& t = T(), mylib::allocator* alloc = &mylib::def_allocator);
+    list(const std::initializer_list<T>& init_list, mylib::allocator* alloc = &mylib::def_allocator);        
+    list(const list& other, mylib::allocator* alloc = &mylib::def_allocator);
     list& operator=(const list& other);
     list(list&& other);
     list& operator=(list&& other);
@@ -30,7 +33,6 @@ public:
     void front_back(T&& arg);
     void pop_back();
     void front_back();
-    void reserve(size_t new_cap);
     size_t size() const;
     bool empty() const;
 };

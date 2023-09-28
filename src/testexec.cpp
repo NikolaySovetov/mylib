@@ -12,6 +12,36 @@
 
 int main()  {
 
+   mylib::list<int> empty_list;
+   std::cout << "----------------------------\n";
+
+   mylib::list<int> filled_list (10, 101);
+   std::cout << "----------------------------\n";
+
+   mylib::list<float> float_filled_list ({101.5f, 102.4f, 154.5f});
+   std::cout << "----------------------------\n";
+
+
+/*    mylib::tests::Person bob {"Bob"};
+   test_list_data_type<mylib::tests::Person> list;
+   list.emplace_front("Sam");
+   list.emplace_back("Nik");
+   list.push_back(mylib::tests::Person{"Nadine"});
+   list.push_back(bob);
+   list.push_front(mylib::tests::Person{"Jack"});
+   list.emplace_back("Tony");
+   list.emplace_back("Sara");
+   list.emplace_back("Vika");
+
+   auto base = list.get_base();
+   auto it = base->next;
+   for (; it != base; it = it->next) {
+      auto node = list.get_node(it);
+      std::cout << node->object.GetName() << ", ";
+   }
+   std::cout << '\n';
+ */
+
 /*    mylib::tests::informator.PrintMess(mylib::tests::Color::green, ">>> ",
                                        {"Hello", " ", "world" , "!!!", "\n"});
 
@@ -31,23 +61,6 @@ int main()  {
 
     std::cout << "Name of Person is " << sh_p5->GetName() << '\n';
  */     
-
-/*    mylib::list<mylib::tests::Person> list;
-   list.push_back(mylib::tests::Person{"Nik"});
-   list.push_back(mylib::tests::Person{"Bob"});
-   list.push_back(mylib::tests::Person{"Tom"});
-   list.pop_back(mylib::tests::Person{"Ira"});
-   list.pop_back(mylib::tests::Person{"Vika"});
-   list.pop_back(mylib::tests::Person{"Anna"});
-
-   std::cout << "******************\n";    
-
-   //mylib::list<mylib::tests::Person>::iterator it{list.begin()};
-
-   for (auto it = list.begin(); it != list.end(); ++it) {
-      std::cout << it->GetName() << ' ';
-   }
-   std::cout << std::endl; */
 
 /*    std::cout << "First node: " << list.first()->GetName() << '\n';
 
@@ -133,14 +146,6 @@ int main()  {
    p = std::move(p2);   
  */   
 
-/*    test_vector<mylib::shared_ptr<int>> sh_vect;
-   sh_vect.push_back(new int{101});
-   sh_vect.push_back(new int{102});
-   sh_vect.push_back(new int{103});
-   sh_vect.push_back(new int{104});
-   sh_vect.push_back(new int{105});
- */
-
 /*    mylib::tests::Person nik {"Nik"};
    mylib::tests::Person bob {"Bob"};
    mylib::tests::Person tom {"Tom"};
@@ -152,18 +157,6 @@ int main()  {
    v.push_back(bob);
    v.push_back(tom);
    v.push_back(sam);
- */
-
-/*    mylib::vector<mylib::tests::Person> v;
-   v.push_back(mylib::tests::Person{"Nik"}); 
-   v.push_back(mylib::tests::Person{"Bob"}); 
-   v.push_back(mylib::tests::Person{"Tom"}); 
-   v.emplace_back("Sam");
-
-   std::cout << "-------------------\n";
-
-   mylib::vector<mylib::tests::Person> v1 {std::move(v)};
-   mylib::vector<mylib::tests::Person> v3 = v1;
  */
 
 /*    mylib::vector<mylib::tests::OnlyMove> v;
@@ -183,7 +176,16 @@ int main()  {
    std::cout << "size = " << v1.size() << '\n';
    std::cout << "cap  = " << v1.capacity() << '\n'; */ 
 
-/*    mylib::vector<mylib::tests::Person> v;
+/*    mylib::vector<mylib::tests::Person> pv;
+   pv.reserve(10);
+   pv.push_back(mylib::tests::Person{"Nik"});
+   pv.push_back(mylib::tests::Person{"Bob"});
+   pv.push_back(mylib::tests::Person{"Tom"});
+
+
+
+
+    mylib::vector<mylib::tests::Person> v;
    v.reserve(10);
    v.emplace_back("Nik");
    v.emplace_back("Bob");
