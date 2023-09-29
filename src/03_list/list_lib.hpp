@@ -38,7 +38,24 @@ public:
     size_t size() const;
     bool empty() const;
 
-        
+    class iterator: virtual public base_iterator<list_data_type<T>>{   
+    public:
+        iterator();
+        iterator(T*);
+        iterator(const iterator&);
+        iterator& operator=(const iterator&);
+        iterator(iterator&&);
+        iterator& operator=(iterator&&);
+        ~iterator();
+
+        void operator++() override;
+        bool operator!=(const base_iterator<T>&) const override;
+        T* operator->() const override;
+        T& operator*() const override;
+    };
+    
+    list<T>::iterator begin() const;
+    list<T>::iterator end() const;
 };
 
 

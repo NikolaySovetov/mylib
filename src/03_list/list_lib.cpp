@@ -334,6 +334,84 @@ bool list<T>::empty() const {
     return (list_data.base_node->next == nullptr);
 }
 
+// *** iterator ***
+
+
+/* 
+template<typename T>
+list<T>::iterator::iterator(T* ptr)
+: base_iterator<T>(list_data.base_node->next) {
+}
+
+template<typename T>
+list<T>::iterator::iterator(const iterator& other): base_iterator<T>(other) {
+}
+
+template<typename T>
+typename list<T>::iterator& list<T>::iterator::operator=(const iterator& other) {
+    if (this != &other) {
+        this->it = nullptr;
+        this->it = other.it;
+    }
+    return *this;
+}
+
+template<typename T>
+list<T>::iterator::iterator(iterator&& other): base_iterator<T>(std::move(other)) {
+}
+
+template<typename T>
+typename list<T>::iterator& list<T>::iterator::operator=(iterator&& other) {
+    if (this != &other) {
+        this->it = nullptr;
+        this->it = other.it;
+        other.it = nullptr;
+    }
+    return *this;
+}
+
+template<typename T>
+list<T>::iterator::~iterator() {
+}
+
+ */
+/* template<typename T>
+void list<T>::iterator::operator++() {
+    it = it->next;
+}
+
+template<typename T>
+bool list<T>::iterator::operator!=(const base_iterator<T>& other) const {
+    return (this->it != other.get());
+}
+
+template<typename T>
+T* list<T>::iterator::operator->() const {
+    return this->it;
+}
+
+template<typename T>
+T& list<T>::iterator::operator*() const {
+    return *(this->it);
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::begin() const {
+    return typename list<T>::iterator(&(this->list.arr[0]));
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::end() const {
+    return typename list<T>::iterator(&(this->list.arr[list.size]));
+}
+ */
+
+/* template<typename T>
+typename list<T>::iterator list<T>::begin() const {
+    return typename list<T>::iterator(&(this->vector_data.arr[0]));
+}
+ */
+
 }   // mylib
 
 

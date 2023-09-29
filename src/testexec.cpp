@@ -22,20 +22,7 @@ int main()  {
    list.emplace_back("Vika");
    std::cout << "--------------------\n";
 
-   auto new_list = list;
-
-   list.pop_front();
-   list.pop_front();
-   list.pop_front();
-   list.pop_front();
-   list.pop_front();
-   list.pop_front();
-
-   new_list.pop_back();
-   new_list.pop_front();
-   new_list.pop_back();
-   new_list.pop_front();
-
+   
 
 /*    mylib::list<mylib::tests::Person> list_01;
    list_01.emplace_back("Nik");
