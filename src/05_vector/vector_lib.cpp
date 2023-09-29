@@ -1,6 +1,7 @@
 #include "vector_config.hpp"
 #include "vector_lib.hpp"
-#include <iostream>
+#include <type_traits>
+//#include <iostream>
 
 #ifdef VECTOR_TEST
 #include <typeinfo>

@@ -1,6 +1,7 @@
 #include "list_config.hpp"
 #include "list_lib.hpp"
 #include <exception>
+#include <type_traits>
 #include <iostream>
 
 #ifdef LIST_TEST
@@ -14,7 +15,6 @@ namespace mylib {
 template<typename T>
 struct list_data_type {
 protected:
-    mylib::allocator* alloc;
     struct base_node_type {
         base_node_type* next;
         base_node_type* prev;
@@ -29,11 +29,62 @@ protected:
         }
     };         
 
+    mylib::allocator* alloc;
     base_node_type* base_node;     
     size_t size;
 
 private:
     friend class list<T>;
+    inline void base_node_init() {
+        base_node = alloc->allocate<base_node_type>();
+        alloc->construct<base_node_type>(base_node);
+    }
+    template<typename... Args>
+        inline node_type* construct_node(Args&... args) {
+            node_type* new_node = nullptr;
+
+            try {
+                new_node = alloc->allocate<node_type>();
+                alloc->construct<node_type, Args...>(new_node, args...);        
+            }
+            catch(const std::bad_alloc& e) {
+                std::cerr << e.what() << '\n';
+                throw;
+            }
+            catch(...) {
+                alloc->destroy(new_node); 
+                throw;   
+            }
+            return new_node;
+    }
+    inline void copy_nodes_from(const base_node_type* base_node) {
+        if (base_node == nullptr) {
+            return;
+        }    
+        base_node_type* node = base_node->next;
+        if (node != nullptr) {
+            for (; node != base_node; node = node->next) {
+                node_type* curr_node = reinterpret_cast<node_type*>(node);
+                emplace_back(static_cast<const T&>(curr_node->object));    
+            }
+        }
+    }
+    inline void destroy_nodes() {
+        base_node_type* temp_node = base_node->next;
+        if (temp_node == nullptr) {
+            return;
+        }
+        for (; temp_node != base_node;) {
+            base_node_type* next_node = temp_node->next;
+            node_type* cur_node = reinterpret_cast<node_type*>(temp_node);
+            alloc->destroy<T>(&(cur_node->object));
+            alloc->deallocate<node_type>(cur_node);
+            temp_node = next_node;
+        }
+        base_node->next = nullptr;
+        base_node->prev = nullptr;
+        size = 0;
+    }
     inline void insetr_first_node(node_type* new_node) {
         new_node->next = base_node;
         new_node->prev = base_node;
@@ -68,43 +119,80 @@ private:
 
 protected: 
     list_data_type(mylib::allocator* a): alloc{a}, size{0} {     
-        base_node = alloc->allocate<base_node_type>();
-        alloc->construct<base_node_type>(base_node);
+        base_node_init();
+    }
+    list_data_type(const list_data_type& other, mylib::allocator* a): alloc{a}, size{0} {
+        base_node_init();
+        copy_nodes_from(other.base_node);
+    }
+    list_data_type& operator=(const list_data_type& other) {
+        alloc = other.alloc;
+        destroy_nodes();
+        copy_nodes_from(other.base_node);
+        return *this;
+    }
+    list_data_type(list_data_type&& other)
+    : alloc{other.alloc}, base_node{other.base_node}, size{other.size} {
+        other.base_node_init();            
+        other.size = 0;            
+    }
+    list_data_type& operator=(list_data_type&& other) {
+        alloc = other.alloc;
+        base_node = other.base_node;
+        size = other.size;
+
+        other.base_node_init();
+        other.size = 0;
+        return *this;
+    }
+    ~list_data_type() {
+        destroy_nodes();
+        alloc->deallocate<>(base_node);    
     }
 
     template<typename... Args>
-    inline void emplace_back(Args&... args) {
-        node_type* new_node = alloc->allocate<node_type>();
-        alloc->construct<node_type, Args...>(new_node, args...);        
-        insert_back(new_node);
+        inline void emplace_back(Args&... args) {        
+            insert_back(construct_node(args...));
     }
     template<typename... Args>
-    inline void emplace_front(Args&... args) {
-        node_type* new_node = alloc->allocate<node_type>();
-        alloc->construct<node_type, Args...>(new_node, args...);        
-        insert_front(new_node);
+        inline void emplace_front(Args&... args) {
+            insert_front(construct_node(args...));
     }
-    
-    void push_back(const T& obj) {
-        emplace_back(obj);
+    inline void pop_back() {
+        if (size == 0) {
+            return;
+        } else if (size == 1) {
+            destroy_nodes();
+        } else {
+            node_type* dead_node = reinterpret_cast<node_type*>(base_node->next);
+            base_node_type* live_node = dead_node->next;
+            
+            alloc->destroy<T>(&(dead_node->object));
+            alloc->deallocate<node_type>(dead_node);
+            
+            live_node->prev = base_node;
+            base_node->next = live_node;
+
+            --size;
+        }
     }
-    void push_back(T&& obj) {
-        emplace_back(obj);
-    }
-    void push_front(const T& obj) {
-        emplace_front(obj);
-    }
-    void push_front(T&& obj) {
-        emplace_front(obj);
-    }
-    size_t sz() const {
-        return size;
-    }
-    base_node_type* get_base() {
-        return base_node;
-    }
-    node_type* get_node(base_node_type* base) {
-        return static_cast<node_type*>(base);           
+    inline void pop_front() {
+        if (size == 0) {
+            return;
+        } else if (size == 1) {
+            destroy_nodes();
+        } else {
+            node_type* dead_node = reinterpret_cast<node_type*>(base_node->prev);
+            base_node_type* live_node = dead_node->prev;
+            
+            alloc->destroy<T>(&(dead_node->object));
+            alloc->deallocate<node_type>(dead_node);
+            
+            live_node->next = base_node;
+            base_node->prev = live_node;
+
+            --size;
+        }
     }
 };
 
@@ -144,23 +232,107 @@ list<T>::list(const std::initializer_list<T>& init_list, mylib::allocator* alloc
 }
 
 template<typename T>
-list<T>::list(const list& other, mylib::allocator* alloc): list_data{alloc} {
+list<T>::list(const list& other, mylib::allocator* alloc)
+: list_data{other.list_data, alloc} {
 #ifdef LIST_TEST
-    tests::informator.PrintMess(list_set, 
-        {"( std::init_list of type: \"", typeid(T).name(), "\" ) created\n"}); 
+    tests::informator.PrintMess(list_set, {"(&) copyed\n"}); 
 #endif
 
 }
 
 template<typename T>
+list<T>& list<T>::operator=(const list& other) {
+#ifdef LIST_TEST
+    tests::informator.PrintMess(list_set, {"=(&) copyed\n"}); 
+#endif
+
+    if (this != &other) {
+        list_data = other.list_data;
+    }
+    return *this;
+}
+
+template<typename T>
+list<T>::list(list&& other, mylib::allocator* alloc)
+: list_data{std::move(other.list_data)} {
+#ifdef LIST_TEST
+    tests::informator.PrintMess(list_set, {"(&&) moved\n"}); 
+#endif
+
+    list_data.alloc = alloc;
+}
+
+template<typename T>
+list<T>& list<T>::operator=(list&& other) {
+#ifdef LIST_TEST
+    tests::informator.PrintMess(list_set, {"=(&&) moved\n"}); 
+#endif
+
+    if (this != &other) {
+        list_data = std::move(other.list_data);
+    }
+    return *this;
+}
+
+template<typename T>
 list<T>::~list() {
+#ifdef LIST_TEST
+    tests::informator.PrintMess(list_set, 
+        {"( type: ", typeid(T).name(), " ) destroyed\n"}); 
+#endif
 }
 
 template<typename T>
 template<typename... Args>
 void list<T>::emplace_back(Args&... args) {
+    list_data.emplace_back(args...);
 }
 
+template<typename T>
+template<typename... Args>
+void list<T>::emplace_front(Args&... args) {
+    list_data.emplace_front(args...);
+}
+
+template<typename T>
+void list<T>::push_back(const T& obj) {
+    list_data.emplace_back(obj);
+}
+
+template<typename T>
+void list<T>::push_back(T&& obj) {
+    list_data.emplace_back(obj);
+}
+
+template<typename T>
+void list<T>::push_front(const T& obj) {
+    emplace_front(obj);
+}
+
+template<typename T>
+void list<T>::push_front(T&& obj) {
+    emplace_front(obj);
+}
+
+template<typename T>
+void list<T>::pop_back() {
+    list_data.pop_back();
+}
+
+template<typename T>
+void list<T>::pop_front() {
+    list_data.pop_front();
+}
+
+template<typename T>
+size_t list<T>::size() const {
+    return list_data.size;
+}
+
+template<typename T>
+bool list<T>::empty() const {
+    return (list_data.base_node->next == nullptr);
+}
 
 }   // mylib
 

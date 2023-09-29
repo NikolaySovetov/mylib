@@ -8,24 +8,18 @@ namespace mylib {
 class allocator {
 public:
     allocator();
+    ~allocator();
 
 template<typename T>
-inline T* allocate();
-
+    inline T* allocate(size_t objects_num = 1);
 template<typename T>
-inline T* allocate(size_t objects_num);
-
+    inline void deallocate(T* ptr, size_t size = 1);
 template<typename T>
-inline void deallocate(T* ptr);
-
-template<typename T>
-inline void construct(void* ptr);
-
+    inline void construct(void* ptr);
 template<typename T, typename... Args> 
-inline void construct(void* ptr, Args&... args);
-
+    inline void construct(void* ptr, Args&... args);
 template<typename T>
-inline void destroy(T* ptr);
+    inline void destroy(T* ptr);
     
 } def_allocator;
 

@@ -9,18 +9,44 @@
 #include <iostream>
 #include <vector>
 #include <typeinfo>
+#include <chrono>
+#include <thread>
 
 int main()  {
 
-   mylib::list<int> empty_list;
-   std::cout << "----------------------------\n";
 
-   mylib::list<int> filled_list (10, 101);
-   std::cout << "----------------------------\n";
+   mylib::list<mylib::tests::Person> list;
+   list.emplace_back("Sara");
+   list.emplace_back("Jasica");
+   list.emplace_back("Suzan");
+   list.emplace_back("Vika");
+   std::cout << "--------------------\n";
 
-   mylib::list<float> float_filled_list ({101.5f, 102.4f, 154.5f});
-   std::cout << "----------------------------\n";
+   auto new_list = list;
 
+   list.pop_front();
+   list.pop_front();
+   list.pop_front();
+   list.pop_front();
+   list.pop_front();
+   list.pop_front();
+
+   new_list.pop_back();
+   new_list.pop_front();
+   new_list.pop_back();
+   new_list.pop_front();
+
+
+/*    mylib::list<mylib::tests::Person> list_01;
+   list_01.emplace_back("Nik");
+   list_01.emplace_back("Bob");
+   list_01.emplace_back("Tom");
+
+   mylib::list<mylib::tests::Person> list_02;
+   list_02 = list_01;
+
+   auto list_03 (std::move(list_01));
+ */   
 
 /*    mylib::tests::Person bob {"Bob"};
    test_list_data_type<mylib::tests::Person> list;

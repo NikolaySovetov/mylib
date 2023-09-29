@@ -94,7 +94,7 @@ void PrintC::PrintMess(const Color& cl, const char* mk,
 
 // *** Person ***
 #ifdef PERSON_TEST 
-    MsSettings person_settings{Color::yellow, " -"};
+    MsSettings person_settings{Color::yellow, "\t\t-- "};
         static int  common_person_counter {0};
 #endif
 
