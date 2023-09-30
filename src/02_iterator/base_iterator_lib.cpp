@@ -10,29 +10,29 @@
 
 namespace mylib {
 
-template<typename T>
-base_iterator<T>::base_iterator(): it {nullptr} {
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>::base_iterator(): it {nullptr}  {
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {"() created\n"}); 
 #endif
 }
 
-template<typename T>
-base_iterator<T>::base_iterator(T* obj): it {   obj} {   
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>::base_iterator(T* obj): it {obj}  {   
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {"(T*) created\n"}); 
 #endif
 }
 
-template<typename T>
-base_iterator<T>::base_iterator(const base_iterator& other): it {other.it} {
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>::base_iterator(const base_iterator& other): it {other.it} {
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {"(&) created\n"}); 
 #endif
 }
 
-template<typename T>
-base_iterator<T>& base_iterator<T>::operator=(const base_iterator& other) {
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>& base_iterator<T, Ptr, Ref>::operator=(const base_iterator& other) {
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {" =(&) created\n"}); 
 #endif
@@ -44,8 +44,8 @@ base_iterator<T>& base_iterator<T>::operator=(const base_iterator& other) {
     return *this;
 }
 
-template<typename T>
-base_iterator<T>::base_iterator(base_iterator&& other): it {other.it} {
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>::base_iterator(base_iterator&& other): it {other.it} {
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {"(&&) created\n"}); 
 #endif
@@ -53,8 +53,8 @@ base_iterator<T>::base_iterator(base_iterator&& other): it {other.it} {
     other.it = nullptr;
 }
 
-template<typename T>
-base_iterator<T>& base_iterator<T>::operator=(base_iterator&& other) {
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>& base_iterator<T, Ptr, Ref>::operator=(base_iterator&& other) {
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {" =(&&) created\n"}); 
 #endif
@@ -67,8 +67,8 @@ base_iterator<T>& base_iterator<T>::operator=(base_iterator&& other) {
     return *this;
 }
 
-template<typename T>
-base_iterator<T>::~base_iterator() {
+template<typename T, typename Ptr, typename Ref>
+base_iterator<T, Ptr, Ref>::~base_iterator() {
 #ifdef ITERATOR_TEST
     tests::informator.PrintMess(base_iterator_set, {"() destroyed\n"}); 
 #endif
@@ -76,31 +76,26 @@ base_iterator<T>::~base_iterator() {
     it = nullptr;
 }
 
-template<typename T>
-T* base_iterator<T>::get() const {
-    return it;
-}
-
-/* template<typename T>
-void base_iterator<T>::operator++() {
+template<typename T, typename Ptr, typename Ref>
+void base_iterator<T, Ptr, Ref>::operator++() {
     ++it;
 }
 
-template<typename T>
-bool base_iterator<T>::operator!=(const base_iterator& other) const {
+template<typename T, typename Ptr, typename Ref>
+bool base_iterator<T, Ptr, Ref>::operator!=(const base_iterator& other) const {
     return it != other.it;
 }
 
-template<typename T>
-T* base_iterator<T>::operator->() const {
+template<typename T, typename Ptr, typename Ref>
+Ptr base_iterator<T, Ptr, Ref>::operator->() const {
     return it;
 }
 
-template<typename T>
-T& base_iterator<T>::operator*() const {
+template<typename T, typename Ptr, typename Ref>
+Ref base_iterator<T, Ptr, Ref>::operator*() const {
     return *it;
 }
- */
+
 
 }   // mylib
 

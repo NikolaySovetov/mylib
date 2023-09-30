@@ -3,10 +3,10 @@
 
 namespace mylib {
 
-template<typename T>
+template<typename T, typename Ptr = T*, typename Ref = T&>
 class base_iterator {
 protected:
-    T* it;
+    T*  it;
 
 public:
     base_iterator();
@@ -16,13 +16,12 @@ public:
     base_iterator(base_iterator&&);
     base_iterator& operator=(base_iterator&&);
     virtual ~base_iterator();
-    T* get() const;
 
-    //virtual void operator++() = 0;
-    //virtual bool operator!=(const base_iterator&) const = 0;
-    //virtual T* operator->() const = 0;
-    //virtual T& operator*() const = 0;
-
+    void operator++();
+    bool operator!=(const base_iterator&) const;
+    Ptr operator->() const;
+    Ref operator*() const;
 };
- 
+
+
 }   // mylib

@@ -292,6 +292,19 @@ bool list<T>::empty() const {
 }
 
 // *** iterator ***
+template<typename T>
+typename list<T>::iterator list<T>::begin() {
+    return base_iterator<list<T>::base_node_type, T, T>(base_node->next);
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::end() {
+    return base_iterator<list<T>::base_node_type, T, T>(base_node);
+}
+
+
+
+
 /* template<typename T>
 list<T>::iterator::iterator()
 : base_iterator<T>(), iter_node{nullptr} {

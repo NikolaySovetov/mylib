@@ -61,8 +61,14 @@ public:
     size_t size() const;
     bool empty() const;
 
-    static mylib::base_iterator<list> iterator; 
+    typedef base_iterator<list<T>::base_node_type, T, T> iterator; 
+    iterator begin();
+    iterator end();
 
+
+    //class iterator: base_iterator<base_node_type, T, T>{}; 
+    //base_iterator<base_node_type, T, T> begin() const;
+    //base_iterator<base_node_type, T, T> end() const;
 
 /*     class iterator: virtual public base_iterator<T>{
     private:
@@ -83,8 +89,7 @@ public:
         T& operator*() const override;
     };
     
-    list<T>::iterator begin() const;
-    list<T>::iterator end() const;
+
  */};
 
 
