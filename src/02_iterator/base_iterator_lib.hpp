@@ -18,10 +18,11 @@ public:
     virtual ~base_iterator();
     T* get() const;
 
-    virtual void operator++() = 0;
-    virtual bool operator!=(const base_iterator&) const = 0;
-    virtual T* operator->() const = 0;
-    virtual T& operator*() const = 0;
+    //virtual void operator++() = 0;
+    //virtual bool operator!=(const base_iterator&) const = 0;
+    //virtual T* operator->() const = 0;
+    //virtual T& operator*() const = 0;
+
 };
  
 }   // mylib

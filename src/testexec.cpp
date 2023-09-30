@@ -22,7 +22,19 @@ int main()  {
    list.emplace_back("Vika");
    std::cout << "--------------------\n";
 
+   mylib::list<mylib::tests::Person> new_list;
+   new_list.emplace_back("Tom");
+   new_list.emplace_back("Nik");
+   std::cout << "--------------------\n";
+
+   auto new_new__list {std::move(list)}; 
    
+   mylib::list<mylib::tests::Person>::iterator it;  
+
+
+
+   //mylib::list<mylib::tests::Person>::iterator list_iterator;
+
 
 /*    mylib::list<mylib::tests::Person> list_01;
    list_01.emplace_back("Nik");

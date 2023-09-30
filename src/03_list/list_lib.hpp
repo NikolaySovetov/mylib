@@ -8,12 +8,35 @@
 namespace mylib {
 
 template<typename T>
-struct list_data_type;
-
-template<typename T>
 class list {
 private:
-    list_data_type<T> list_data;
+    struct base_node_type {
+        base_node_type* next;
+        base_node_type* prev;   
+
+        base_node_type(): prev{nullptr}, next{nullptr} {}
+    }* base_node;     
+
+    struct node_type : public base_node_type {
+        T object;
+
+        template<typename... Args>
+        node_type(Args&... args): base_node_type(), object(std::forward<Args>(args)...) {
+        }
+    };         
+
+    mylib::allocator* alloc;
+    size_t m_size;
+
+private:
+    inline void base_node_init();
+    template<typename... Args>
+        inline node_type* construct_node(Args&... args);
+    inline void copy_nodes_from(const base_node_type* base_node);
+    inline void destroy_nodes();
+    inline void insetr_first_node(node_type* new_node);
+    inline void insert_back(node_type* new_node);
+    inline void insert_front(node_type* new_node);
 
 public:
     list(mylib::allocator* alloc = &mylib::def_allocator);
@@ -38,10 +61,16 @@ public:
     size_t size() const;
     bool empty() const;
 
-    class iterator: virtual public base_iterator<list_data_type<T>>{   
+    static mylib::base_iterator<list> iterator; 
+
+
+/*     class iterator: virtual public base_iterator<T>{
+    private:
+        base_node_type* iter_node;        
+
     public:
         iterator();
-        iterator(T*);
+        iterator(base_node_type*);
         iterator(const iterator&);
         iterator& operator=(const iterator&);
         iterator(iterator&&);
@@ -49,14 +78,14 @@ public:
         ~iterator();
 
         void operator++() override;
-        bool operator!=(const base_iterator<T>&) const override;
+        bool operator!=(const iterator&) const override;
         T* operator->() const override;
         T& operator*() const override;
     };
     
     list<T>::iterator begin() const;
     list<T>::iterator end() const;
-};
+ */};
 
 
 }   // mylib
