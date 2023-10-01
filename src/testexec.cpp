@@ -14,7 +14,6 @@
 
 int main()  {
 
-
    mylib::list<mylib::tests::Person> list;
    list.emplace_back("Sara");
    list.emplace_back("Jasica");
@@ -22,20 +21,31 @@ int main()  {
    list.emplace_back("Vika");
    std::cout << "--------------------\n";
 
-   mylib::list<mylib::tests::Person>::iterator it = list.begin();
+   auto end = list.end();
+   for (auto it {list.begin()}; it != end; ++it) {
+      std::cout << it->GetName() << " "; 
+   }
+   std::cout << std::endl;
 
-
-
-
-/*    mylib::list<mylib::tests::Person> new_list;
-   new_list.emplace_back("Tom");
-   new_list.emplace_back("Nik");
+   for (const auto& it : list) {
+      std::cout << it.GetName() << " "; 
+   }
+   std::cout << std::endl;
    std::cout << "--------------------\n";
 
-   auto new_new__list {std::move(list)}; 
- */   
-   //mylib::list<mylib::tests::Person>::iterator it;  
-   //mylib::list<mylib::tests::Person>::iterator list_iterator;
+   mylib::list<int> int_list;
+   int_list.push_back(101);
+   int_list.push_back(102);
+   int_list.push_back(103);
+   int_list.push_back(104);
+
+   auto int_end = int_list.end();
+   for (auto it {int_list.begin()}; it != int_end; ++it) {
+      std::cout << *it << " "; 
+   }
+   std::cout << std::endl;
+
+
 
 
 /*    mylib::list<mylib::tests::Person> list_01;

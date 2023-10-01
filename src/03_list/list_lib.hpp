@@ -14,15 +14,17 @@ private:
         base_node_type* next;
         base_node_type* prev;   
 
-        base_node_type(): prev{nullptr}, next{nullptr} {}
+        base_node_type();
+        inline base_node_type* get_next();
+        inline T* get_ptr(base_node_type*) const;
+        inline T& get_ref(base_node_type*) const;
     }* base_node;     
 
     struct node_type : public base_node_type {
         T object;
 
         template<typename... Args>
-        node_type(Args&... args): base_node_type(), object(std::forward<Args>(args)...) {
-        }
+            node_type(Args&... args);
     };         
 
     mylib::allocator* alloc;
@@ -61,36 +63,9 @@ public:
     size_t size() const;
     bool empty() const;
 
-    typedef base_iterator<list<T>::base_node_type, T, T> iterator; 
+    typedef base_iterator<typename list<T>::base_node_type, T*, T&> iterator; 
     iterator begin();
     iterator end();
-
-
-    //class iterator: base_iterator<base_node_type, T, T>{}; 
-    //base_iterator<base_node_type, T, T> begin() const;
-    //base_iterator<base_node_type, T, T> end() const;
-
-/*     class iterator: virtual public base_iterator<T>{
-    private:
-        base_node_type* iter_node;        
-
-    public:
-        iterator();
-        iterator(base_node_type*);
-        iterator(const iterator&);
-        iterator& operator=(const iterator&);
-        iterator(iterator&&);
-        iterator& operator=(iterator&&);
-        ~iterator();
-
-        void operator++() override;
-        bool operator!=(const iterator&) const override;
-        T* operator->() const override;
-        T& operator*() const override;
-    };
-    
-
- */};
-
+};
 
 }   // mylib

@@ -19,8 +19,9 @@ public:
 
     void operator++();
     bool operator!=(const base_iterator&) const;
-    Ptr operator->() const;
     Ref operator*() const;
+    Ptr operator->() const;
+    Ptr get() const;
 };
 
 

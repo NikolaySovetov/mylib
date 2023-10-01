@@ -78,7 +78,7 @@ base_iterator<T, Ptr, Ref>::~base_iterator() {
 
 template<typename T, typename Ptr, typename Ref>
 void base_iterator<T, Ptr, Ref>::operator++() {
-    ++it;
+    it = it->get_next();
 }
 
 template<typename T, typename Ptr, typename Ref>
@@ -88,12 +88,17 @@ bool base_iterator<T, Ptr, Ref>::operator!=(const base_iterator& other) const {
 
 template<typename T, typename Ptr, typename Ref>
 Ptr base_iterator<T, Ptr, Ref>::operator->() const {
-    return it;
+    return it->get_ptr(it);
 }
 
 template<typename T, typename Ptr, typename Ref>
 Ref base_iterator<T, Ptr, Ref>::operator*() const {
-    return *it;
+    return it->get_ref(it);
+}
+
+template<typename T, typename Ptr, typename Ref>
+Ptr base_iterator<T, Ptr, Ref>::get() const {
+    return it->get_ptr(it);
 }
 
 
