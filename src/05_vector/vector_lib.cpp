@@ -1,6 +1,6 @@
 #include "vector_config.hpp"
 #include "vector_lib.hpp"
-#include <type_traits>
+//#include <type_traits>
 //#include <iostream>
 
 #ifdef VECTOR_TEST
@@ -10,7 +10,7 @@
 #endif
 
 namespace mylib {
-
+/* 
 template<typename T>
 struct vector_data_type {
 private:
@@ -98,9 +98,70 @@ private:
                                                    const T&, T&&>::type(arr[0]));
     }                                               
 };
+ */
 
 template<typename T>
-vector<T>::vector() {
+vector<T>::vector_data_type::vector_data_type()
+: m_size {0}, m_capacity {0}, arr {nullptr} {
+}
+
+template<typename T>
+void vector<T>::destroy_if_fault_realloc(T* arr_ptr, T* realloc_ptr, const T&) {
+    alloc->destroy<T>(realloc_ptr);
+}
+
+template<typename T>
+void vector<T>::destroy_if_fault_realloc(T* arr_ptr, T* realloc_ptr, T&&) {
+    try {
+        alloc->construct<T>(arr_ptr, *realloc_ptr);
+        alloc->destroy<T>(realloc_ptr);
+    }
+    catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+}
+
+template<typename T>
+void vector<T>::realloc(T* new_arr) {
+    size_t count {0};
+    
+    /*  try to reallocation an object by copy constructor of the object if possible,
+        if it not possible will move the object  */
+    try {
+        for (; count < vector_data.m_size; ++count) {
+            alloc->construct<T>(new_arr + count, 
+                typename std::conditional<std::is_copy_constructible_v<T>,
+                                          const T&, T&&>::type(vector_data.arr[count])); 
+            ++count;                                 
+        }
+    }    
+    catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+
+        /*  if had any exception of the constructor of the object destroy all new objects
+            and deallocete new_array, or try to move objects back   */    
+        for (size_t i {0}; i < count; ++i) {
+            try {
+                destroy_if_fault_realloc((vector_data.arr + i), (new_arr + i),
+                    typename std::conditional<std::is_copy_constructible_v<T>,
+                                              const T&, T&&>::type(vector_data.arr[count])); 
+            }
+            catch(const std::exception& e) {
+                /*  this section will use if had the exception from move constructor
+                    againe. In this case default constructor has occured    */
+                std::cerr << e.what() << '\n';
+                alloc->construct<T>(vector_data.arr + i);
+            }
+        }
+        throw;
+    }
+
+    vector_data.arr = new_arr;
+}
+    
+template<typename T>
+vector<T>::vector(mylib::allocator* a)
+: vector_data(), alloc {a} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
         {"( type: ", typeid(T).name(), " ) created\n"}); 
@@ -108,6 +169,73 @@ vector<T>::vector() {
 }
 
 template<typename T>
+vector<T>::vector(size_t size, const T& t, mylib::allocator* a)
+: vector_data(), alloc {a}  {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"( type: ", typeid(T).name(), " ) created\n"}); 
+#endif
+    
+    this->reserve(size);
+
+    size_t count {0};
+    for (; count < size; ++count) {
+        try {
+            alloc->construct<T>(vector_data.arr + count, t);
+        }
+        catch(const std::exception& e) {
+            std::cerr << e.what() << '\n';
+            for (size_t i {0}; i < count; ++i) {
+                vector_data.arr[i].~T();  
+            }
+            alloc->deallocate<T>(vector_data.arr, size);
+            throw;
+        }
+    }
+    vector_data.m_size = size;
+    vector_data.m_capacity = size;
+}
+
+
+
+
+
+
+
+template<typename T>
+vector<T>::~vector() {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"( type: ", typeid(T).name(), " ) destroyed\n"}); 
+#endif
+
+    for (size_t i {0}; i < vector_data.m_size; ++i) {
+        alloc->destroy<T>(vector_data.arr + i);
+    }
+    alloc->deallocate<T>(vector_data.arr, vector_data.m_capacity);
+}
+
+template<typename T>
+void vector<T>::reserve(size_t new_cap) {
+    if (new_cap < vector_data.m_capacity) {
+        return;
+    }
+    T* new_arr = nullptr;
+    
+    try {
+        new_arr = alloc->allocate<T>(new_cap);
+    }
+    catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    realloc(new_arr);
+    vector_data.m_capacity = new_cap;
+}
+
+
+
+/* template<typename T>
 vector<T>::vector(size_t sz, const T& t) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
@@ -356,5 +484,7 @@ template<typename T>
 typename vector<T>::iterator vector<T>::end() const {
     return typename vector<T>::iterator(&(this->vector_data.arr[vector_data.size]));
 }
+ */
+
 
 }   // mylib

@@ -1,21 +1,35 @@
 #pragma once
 #include "base_iterator.hpp"
+#include "allocator.hpp"
+#include "base_iterator.hpp"
 #include <cstddef>
 #include <initializer_list>
+#include <type_traits>
 
 namespace mylib {
 
 template<typename T>
-struct vector_data_type;
-
-template<typename T>
 class vector {
 private:
-    vector_data_type<T> vector_data;
+    struct vector_data_type {
+        size_t m_size;
+        size_t m_capacity;
+        T* arr;
+
+        vector_data_type();
+    } vector_data;
+
+    mylib::allocator* const alloc;
+
+private:
+    void realloc(T* new_arr);
+    void destroy_if_fault_realloc(T*, T*, const T&);
+    void destroy_if_fault_realloc(T*, T*, T&&);
 
 public:
-    vector();
-    vector(size_t size, const T& t = T());
+    vector(mylib::allocator* alloc = &def_allocator);
+    vector(size_t size, const T& t = T(), 
+           mylib::allocator* alloc = &def_allocator);
     vector(const std::initializer_list<T>& list);        
     vector(const vector& other);
     vector& operator=(const vector& other);
@@ -33,22 +47,7 @@ public:
     size_t capacity() const;
     bool empty() const;
 
-    class iterator: virtual public mylib::base_iterator<T>{   
-    public:
-        iterator();
-        iterator(T*);
-        iterator(const iterator&);
-        iterator& operator=(const iterator&);
-        iterator(iterator&&);
-        iterator& operator=(iterator&&);
-        ~iterator();
-
-        void operator++() override;
-        bool operator!=(const base_iterator<T>&) const override;
-        T* operator->() const override;
-        T& operator*() const override;
-    };
-    
+    typedef base_iterator<vector_data_type, T*, T&> iterator;    
     iterator begin() const;
     iterator end() const;
 };

@@ -56,7 +56,7 @@ inline T* allocator::allocate(size_t objects_num) {
 template<typename T>
 inline void allocator::deallocate(T* ptr, size_t size) {
 #ifdef ALLOCATOR_TEST 
-    const char* allocator_bytes_number = std::to_string(sizeof(T)).c_str();
+    const char* allocator_bytes_number = std::to_string(sizeof(T) * size).c_str();
     tests::informator.PrintMess(allocator_set, {"deallocate ", allocator_bytes_number, " bytes\n"}); 
     common_deallocated_bytes_counter += (sizeof(T) * size);
 #endif
@@ -65,7 +65,7 @@ inline void allocator::deallocate(T* ptr, size_t size) {
 }
 
 template<typename T>
-inline void allocator::construct(void* ptr) {
+inline void allocator::construct(T* ptr) {
     try {
         new (ptr) T();
     }
@@ -75,15 +75,26 @@ inline void allocator::construct(void* ptr) {
 }
 
 template<typename T, typename... Args> 
-inline void allocator::construct(void* ptr, Args&... args) {
+inline void allocator::construct(T* ptr, Args&&... args) {
     try {
-        new (ptr) T(args...);
+        new (ptr) T(std::forward<Args>(args)...);
     }
     catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
 
     }
 }
+
+//template<typename T, typename... Args> 
+//inline void allocator::construct(T* ptr, const Args&... args) {
+//    try {
+//        new (ptr) T(args...);
+//    }
+//    catch(const std::exception& e) {
+//        std::cerr << e.what() << '\n';
+//
+//    }
+//}
 
 template<typename T>
 inline void allocator::destroy(T* ptr) {

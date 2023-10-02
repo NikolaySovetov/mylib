@@ -15,9 +15,11 @@ template<typename T>
 template<typename T>
     inline void deallocate(T* ptr, size_t size = 1);
 template<typename T>
-    inline void construct(void* ptr);
+    inline void construct(T* ptr);
 template<typename T, typename... Args> 
-    inline void construct(void* ptr, Args&... args);
+    inline void construct(T* ptr, Args&&... args);
+//template<typename T, typename... Args> 
+//    inline void construct(T* ptr, const Args&... args);
 template<typename T>
     inline void destroy(T* ptr);
     

@@ -25,3 +25,6 @@ target_link_libraries(vector PUBLIC base_iterator)
 if (${VECTOR_TEST}) 
     target_link_libraries(vector PRIVATE fortests)
 endif()
+
+target_link_libraries(vector PRIVATE allocator
+                             PRIVATE base_iterator)
