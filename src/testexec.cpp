@@ -15,11 +15,56 @@
 
 int main()  {
 
-   //mylib::vector<mylib::tests::Person> v;
-   //v.reserve(10);
+   mylib::vector<mylib::tests::Person> v;
+   v.emplace_back("Nik");
+   v.emplace_back("Bob");
+   v.emplace_back("Tom");
+   v.push_back(mylib::tests::Person{"Sarah"});
 
-   //mylib::vector<mylib::tests::Person> v (4);
-   mylib::vector<mylib::tests::Person> v(4);
+   mylib::tests::Person vika {"Vika"};
+   mylib::tests::Person monika {"Monika"};
+   v.push_back(vika);
+   v.push_back(monika);
+
+   std::cout << v.size() << '\n';
+
+   auto it {v.begin()};
+   auto it_end   {v.end()};
+
+   for (; it != it_end; ++it) {
+      std::cout << it->GetName() << ", ";
+   }
+   std::cout << std::endl;
+
+
+   mylib::list<mylib::tests::Person> person_list {mylib::tests::Person{"Nik"},
+                                                  mylib::tests::Person{"Bob"},
+                                                  mylib::tests::Person{"Tom"},
+                                                  mylib::tests::Person{"Tom"},
+                                                  mylib::tests::Person{"Tom"},
+                                                  mylib::tests::Person{"Tom"},
+                                                  mylib::tests::Person{"Tom"}};
+
+   auto test_list = person_list;
+
+   mylib::vector<mylib::list<mylib::tests::Person>> person_vec {person_list,
+                                                                person_list,
+                                                                person_list,
+                                                                person_list,
+                                                                person_list,
+                                                                person_list,
+                                                                person_list,
+                                                                person_list,
+                                                                person_list};
+   
+   auto person_vec_copy {person_vec};
+   auto person_vec_move {person_vec_copy};
+
+   mylib::vector<mylib::list<mylib::tests::Person>> person_vec_move_oper {person_list,
+                                                                          person_list,
+                                                                          person_list};
+
+   person_vec_move_oper = person_vec_move;
 
 
 

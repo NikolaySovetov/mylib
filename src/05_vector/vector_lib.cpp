@@ -1,167 +1,117 @@
 #include "vector_config.hpp"
 #include "vector_lib.hpp"
-//#include <type_traits>
-//#include <iostream>
+#include <typeinfo>
+#include <type_traits>
+#include <iostream>
 
 #ifdef VECTOR_TEST
-#include <typeinfo>
 #include "fortests.hpp"
     mylib::tests::MsSettings vector_set {mylib::tests::Color::green, ">> vector"};
+    mylib::tests::MsSettings vector_reallov_set {mylib::tests::Color::green, "\t"};
 #endif
 
 namespace mylib {
-/* 
-template<typename T>
-struct vector_data_type {
-private:
-    T* arr;
-    size_t capacity;
-    size_t size;
-    friend class vector<T>;
-
-private:
-    vector_data_type(): arr{nullptr}, capacity{0}, size{0} {        
-    };
-    inline void erase() {
-        for (size_t i {0}; i < size; ++i) {
-            arr[i].~T();
-        }
-        delete[] reinterpret_cast<std::byte*>(arr);
-    }
-    void realloc(T* new_arr, T&&) {
-        size_t count {0};
-
-        try {
-            for (size_t i {0}; i < size; ++i) {
-                new (new_arr + i) T(std::move(arr[i])); 
-                ++count;
-            }
-        }
-        catch(const std::exception& e) {
-            for (size_t i {count};; --i) {
-                new (arr + i) T(std::move(new_arr[i])); 
-            }
-
-            for (size_t i {0}; i < count; ++i) {
-                new_arr[i].~T();
-            }
-
-            delete[] reinterpret_cast<std::byte*>(new_arr);
-
-            std::cerr << e.what() << '\n';
-            throw;
-        }
-        erase();
-        arr = new_arr;
-    }
-    void realloc(T* new_arr, const T&) {
-        size_t count {0};
-
-        try {
-            for (size_t i {0}; i < size; ++i) {
-                new (new_arr + i) T(arr[i]); 
-                ++count;
-            }
-        }
-        catch(const std::exception& e) {
-            for (size_t i {0}; i < count; ++i) {
-                new_arr[i].~T();
-            }
-
-            delete[] reinterpret_cast<std::byte*>(new_arr);
-
-            std::cerr << e.what() << '\n';
-            throw;
-        }
-        erase();
-        arr = new_arr;
-    }
-    void realloc(const vector_data_type& other) {
-        size_t count {0};
-
-        try {
-            for (size_t i {0}; i < other.size; ++i) {
-                new (arr + i) T(other.arr[i]); 
-                ++count;
-            }
-        }
-        catch(const std::exception& e) {
-            for (size_t i {0}; i < count; ++i) {
-                arr[i].~T();
-            }
-            std::cerr << e.what() << '\n';
-            throw;
-        }
-    }
-    void reallocation(T* new_arr) {   
-        realloc(new_arr, typename std::conditional<std::is_copy_constructible_v<T>, 
-                                                   const T&, T&&>::type(arr[0]));
-    }                                               
-};
- */
 
 template<typename T>
-vector<T>::vector_data_type::vector_data_type()
-: m_size {0}, m_capacity {0}, arr {nullptr} {
-}
+void vector<T>::realloc(T* new_arr, size_t new_cap) noexcept {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_reallov_set, {"--- start reallocation\n"}); 
+#endif
 
-template<typename T>
-void vector<T>::destroy_if_fault_realloc(T* arr_ptr, T* realloc_ptr, const T&) {
-    alloc->destroy<T>(realloc_ptr);
-}
-
-template<typename T>
-void vector<T>::destroy_if_fault_realloc(T* arr_ptr, T* realloc_ptr, T&&) {
-    try {
-        alloc->construct<T>(arr_ptr, *realloc_ptr);
-        alloc->destroy<T>(realloc_ptr);
-    }
-    catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
-    }
-}
-
-template<typename T>
-void vector<T>::realloc(T* new_arr) {
-    size_t count {0};
+    size_t success_count {0};
     
     /*  try to reallocation an object by copy constructor of the object if possible,
         if it not possible will move the object  */
     try {
-        for (; count < vector_data.m_size; ++count) {
-            alloc->construct<T>(new_arr + count, 
+        for (; success_count < v_size; ++success_count) {
+            alloc.construct<T>(new_arr + success_count, 
                 typename std::conditional<std::is_copy_constructible_v<T>,
-                                          const T&, T&&>::type(vector_data.arr[count])); 
-            ++count;                                 
+                                          const T&, T&&>::type(v_arr[success_count])); 
         }
     }    
     catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
+        std::cerr << "error: vector<" << typeid(T).name() << ">: fault reallocation\n";
 
-        /*  if had any exception of the constructor of the object destroy all new objects
-            and deallocete new_array, or try to move objects back   */    
-        for (size_t i {0}; i < count; ++i) {
-            try {
-                destroy_if_fault_realloc((vector_data.arr + i), (new_arr + i),
-                    typename std::conditional<std::is_copy_constructible_v<T>,
-                                              const T&, T&&>::type(vector_data.arr[count])); 
-            }
-            catch(const std::exception& e) {
-                /*  this section will use if had the exception from move constructor
-                    againe. In this case default constructor has occured    */
-                std::cerr << e.what() << '\n';
-                alloc->construct<T>(vector_data.arr + i);
-            }
+        handle_fault_realloc(new_arr, new_cap, success_count,
+            typename std::conditional<std::is_copy_constructible_v<T>,
+                                      const T&, T&&>::type(v_arr[success_count]));
+        return;                               
+    }
+
+    for (size_t i {0}; i < v_size; ++i) {
+        alloc.destroy<T>(v_arr + i);
+    }
+    alloc.deallocate<T>(v_arr, v_capacity);
+    v_arr = new_arr;
+    v_capacity = new_cap;
+
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_reallov_set, {"    finish reallocation ---\n"}); 
+#endif
+
+}
+
+template<typename T>
+void vector<T>::handle_fault_realloc(T* new_arr, size_t new_capacity,
+                                         size_t success_count, const T&) noexcept {
+    for (size_t i {0}; i < success_count; ++i) {
+        alloc.destroy<T>(new_arr + i);
+    }
+    alloc.deallocate<T>(new_arr, new_capacity);
+    std::cerr << "vector restored.\n";
+}
+
+template<typename T>
+void vector<T>::handle_fault_realloc(T* new_arr, size_t new_capacity,
+                                         size_t success_count, T&&) noexcept {
+
+    /*  destroy and deallocate old array */                                            
+    for (size_t i {0}; i < v_size; ++i) {
+        alloc.destroy<T>(v_arr + i);
+    }
+    alloc.deallocate<T>(v_arr, v_capacity);
+    
+    v_arr = new_arr;
+    v_capacity = new_capacity;
+    v_size = success_count;
+
+    std::cerr << "partial restore\n";
+}
+
+template<typename T>
+void vector<T>::copy_from(const T* arr, size_t size) {
+    size_t count {0};
+
+    try {
+        for (; count < size; ++count) {
+            alloc.construct<T>(v_arr + count, *(arr + count));
         }
+    }
+    catch (const std::exception& e) {
+        for (size_t i {0}; i < count; ++i) {
+            alloc.destroy<T>(v_arr + i);
+        }
+        alloc.deallocate<T>(v_arr, v_capacity);
         throw;
     }
-
-    vector_data.arr = new_arr;
 }
-    
+
 template<typename T>
-vector<T>::vector(mylib::allocator* a)
-: vector_data(), alloc {a} {
+void vector<T>::destroy_arr() noexcept {
+
+    for (size_t i {0}; i < v_size; ++i) {
+        alloc.destroy<T>(v_arr + i);
+    }
+    alloc.deallocate<T>(v_arr, v_capacity);
+
+    v_arr = nullptr;
+    v_capacity = 0;
+    v_size = 0; 
+}
+
+template<typename T>
+vector<T>::vector(const mylib::allocator& a) noexcept
+: v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {a} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
         {"( type: ", typeid(T).name(), " ) created\n"}); 
@@ -169,38 +119,150 @@ vector<T>::vector(mylib::allocator* a)
 }
 
 template<typename T>
-vector<T>::vector(size_t size, const T& t, mylib::allocator* a)
-: vector_data(), alloc {a}  {
+vector<T>::vector(size_t size, const T& t, const mylib::allocator& a) noexcept
+: v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {a} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
         {"( type: ", typeid(T).name(), " ) created\n"}); 
 #endif
-    
-    this->reserve(size);
 
     size_t count {0};
-    for (; count < size; ++count) {
-        try {
-            alloc->construct<T>(vector_data.arr + count, t);
-        }
-        catch(const std::exception& e) {
-            std::cerr << e.what() << '\n';
-            for (size_t i {0}; i < count; ++i) {
-                vector_data.arr[i].~T();  
-            }
-            alloc->deallocate<T>(vector_data.arr, size);
-            throw;
+
+    try {
+        reserve(size);
+        for (; count < size; ++count) {
+            alloc.construct<T>(v_arr + count, t);
         }
     }
-    vector_data.m_size = size;
-    vector_data.m_capacity = size;
+    catch (const std::bad_alloc& e) {
+        return;
+    }
+    catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+        for (size_t i {0}; i < count; ++i) {
+            alloc.destroy<T>(v_arr + i);  
+        }
+        alloc.deallocate<T>(v_arr, size);
+
+        std::cerr << "error: vector<" << typeid(T).name() << ">: can't construct container\n";
+        return;
+    }
+    v_size = size;
 }
 
+template<typename T>
+vector<T>::vector(const std::initializer_list<T>& list, const mylib::allocator& a) noexcept
+: v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {a} {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"( list< type: ", typeid(T).name(), "> ) created\n"}); 
+#endif
 
+    size_t new_size = list.size();   
 
+    try {
+        reserve(new_size);
+        copy_from(list.begin(), new_size);
+    }
+    catch (const std::bad_alloc& e) {
+        return;
+    }
+    catch(const std::exception& e) {
+        std::cerr << "error: vector<" << typeid(T).name() << ">: can't construct container\n";
+        return;
+    }
+    
+    v_size = new_size;
+}
 
+template<typename T>
+vector<T>::vector(const vector& other) noexcept
+: v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {other.alloc} {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"< type: ", typeid(T).name(), ">() copied\n"}); 
+#endif
 
+    try {
+        reserve(other.v_capacity);
+        copy_from(other.v_arr, other.v_size);
+    }
+    catch (const std::bad_alloc& e) {
+        return;
+    }
+    catch(const std::exception& e) {
+        std::cerr << "error: vector<" << typeid(T).name() << ">: can't copy container\n";
+        return;
+    }
+    
+    v_size = other.v_size;
+}
 
+template<typename T>
+vector<T>& vector<T>::operator=(const vector& other) noexcept {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"( < type: ", typeid(T).name(), ">() =copied\n"}); 
+#endif
+
+    if (this == &other) {
+        return *this;
+    }
+    alloc.~allocator();
+    alloc = other.alloc;
+    destroy_arr();
+
+    try {
+        reserve(other.v_capacity);
+        copy_from(other.v_arr, other.v_size);
+    }
+    catch(const std::exception& e) {
+        std::cerr << "error: vector<" << typeid(T).name() << ">: can't copy container\n";
+    }
+    v_size = other.v_size;
+    return *this;
+}
+
+template<typename T>
+vector<T>::vector(vector&& other) noexcept
+: v_size {0}, v_capacity {0}, v_size {0}, alloc {std::move(other.alloc)}  {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"< type: ", typeid(T).name(), ">() moved\n"}); 
+#endif
+
+    v_arr = other.v_arr; 
+    v_capacity = other.v_capacity; 
+    v_size = other.v_size; 
+
+    other.v_arr = nullptr;    
+    other.v_capacity = 0;
+    other.v_size = 0;
+}
+
+template<typename T>
+vector<T>& vector<T>::operator=(vector&& other) noexcept {
+#ifdef VECTOR_TEST
+    tests::informator.PrintMess(vector_set, 
+        {"( < type: ", typeid(T).name(), ">() =moved\n"}); 
+#endif
+
+    if (this == &other) {
+        return *this;
+    }
+    destroy_arr();
+    alloc = std::move(other.alloc);
+
+    v_arr = other.v_arr; 
+    v_capacity = other.v_capacity; 
+    v_size = other.v_size; 
+
+    other.v_arr = nullptr;    
+    other.v_capacity = 0;
+    other.v_size = 0;
+
+    return *this;
+}
 
 template<typename T>
 vector<T>::~vector() {
@@ -209,282 +271,113 @@ vector<T>::~vector() {
         {"( type: ", typeid(T).name(), " ) destroyed\n"}); 
 #endif
 
-    for (size_t i {0}; i < vector_data.m_size; ++i) {
-        alloc->destroy<T>(vector_data.arr + i);
+    destroy_arr();
+}
+
+template<typename T>
+template<typename... Args>
+void vector<T>::emplace_back(Args&&... args) {
+    if (v_size == v_capacity) {
+        (v_capacity == 0) ? reserve(1)
+                                      : reserve(v_capacity * 2);  
     }
-    alloc->deallocate<T>(vector_data.arr, vector_data.m_capacity);
+    try {
+        alloc.construct<T>(v_arr + v_size, 
+                           std::forward<Args>(args)...);                           
+    }
+    catch(const std::exception& e) {
+        std::cerr << "error: vector<" << typeid(T).name() << ">: can't add object\n";
+    }
+    
+    ++v_size;
+}
+
+template<typename T>
+void vector<T>::push_back(const T& t) {
+    emplace_back(t);
+}
+
+template<typename T>
+void vector<T>::push_back(T&& t) {
+    emplace_back(std::move(t));
+}
+
+template<typename T>
+void vector<T>::pop_back() {
+    if (v_size != 0) {
+        --v_size;
+        alloc.destroy<T>(v_arr + v_size);
+    }
 }
 
 template<typename T>
 void vector<T>::reserve(size_t new_cap) {
-    if (new_cap < vector_data.m_capacity) {
+    if (new_cap < v_capacity) {
         return;
     }
     T* new_arr = nullptr;
     
     try {
-        new_arr = alloc->allocate<T>(new_cap);
+        new_arr = alloc.allocate<T>(new_cap);
     }
     catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
-    }
-
-    realloc(new_arr);
-    vector_data.m_capacity = new_cap;
-}
-
-
-
-/* template<typename T>
-vector<T>::vector(size_t sz, const T& t) {
-#ifdef VECTOR_TEST
-    tests::informator.PrintMess(vector_set, 
-        {"( type: ", typeid(T).name(), " ) created\n"}); 
-#endif
-
-    if (sz != 0) {
-        //std::byte* raw_memory = new std::byte[sizeof(T) * sz]; //TODO: allocator, strong-safety
-        //vector_data.arr = reinterpret_cast<T*>(raw_memory);
-        reserve(sz);
-        for (size_t i {0}; i < sz; ++i) {
-            new (vector_data.arr + i) T(t);           
-        }
-        vector_data.size = sz;    
-    } 
-}
-
-template<typename T>
-vector<T>::vector(const std::initializer_list<T>& list) {
-#ifdef VECTOR_TEST
-    tests::informator.PrintMess(vector_set, 
-        {"( std::init_list<T>: ", typeid(T).name(), " ) created\n"}); 
-#endif
-
-    reserve(list.size());
-    const T* arr = list.begin();
-    for (size_t i {0}; i < list.size(); ++i) {
-        new (vector_data.arr + i) T(arr[i]);
-    }    
-    vector_data.size = list.size(); 
-}
-
-template<typename T>
-vector<T>::vector(const vector& other) {
-#ifdef VECTOR_TEST
-    tests::informator.PrintMess(vector_set, 
-        {"( &: ", typeid(T).name(), " ) copied\n"}); 
-#endif
-
-    reserve(other.vector_data.capacity);
-    vector_data.realloc(other.vector_data);
-    vector_data.size = other.vector_data.size;
-}
-
-template<typename T>
-vector<T>& vector<T>::operator=(const vector& other) {
-#ifdef VECTOR_TEST
-    tests::informator.PrintMess(vector_set, 
-        {" =( &: ", typeid(T).name(), " ) copied\n"}); 
-#endif
-
-    if (this != &other) {
-        this->~vector();
-        reserve(other.vector_data.capacity);
-        vector_data.realloc(other.vector_data);
-        vector_data.size = other.vector_data.size;
-    }
-    return *this;    
-}
-
-template<typename T>
-vector<T>::vector(vector&& other) {
-#ifdef VECTOR_TEST
-    tests::informator.PrintMess(vector_set, 
-        {"( &&: ", typeid(T).name(), " ) moved\n"}); 
-#endif
-
-    vector_data.arr = other.vector_data.arr;
-    vector_data.size = other.vector_data.size;
-    vector_data.capacity = other.vector_data.capacity;
-
-    other.vector_data.arr = nullptr;
-    other.vector_data.size = 0;
-    other.vector_data.capacity = 0;
-}
-
-template<typename T>
-vector<T>& vector<T>::operator=(vector<T>&& other) {
-#ifdef VECTOR_TEST
-    tests::informator.PrintMess(vector_set, 
-        {" =( &&: ", typeid(T).name(), " ) moved\n"}); 
-#endif
-
-    if (this != &other) {
-        vector_data.erase();
-        vector_data.arr = other.vector_data.arr;
-        vector_data.size = other.vector_data.size;
-        vector_data.capacity = other.vector_data.capacity;
-
-        other.vector_data.arr = nullptr;
-        other.vector_data.size = 0;
-        other.vector_data.capacity = 0;
-    }
-    return *this;
-}
-
-template<typename T>
-vector<T>::~vector() {
-    vector_data.erase();
-
-#ifdef VECTOR_TEST 
-    tests::informator.PrintMess(vector_set, 
-        {"( type: ", typeid(T).name(), " ) destroyed\n"}); 
-#endif
-}
-
-template<typename T>
-template<typename... Args>
-void vector<T>::emplace_back(Args&... args) {
-    if (vector_data.size == vector_data.capacity) {
-        (vector_data.capacity == 0) ? reserve(1) : reserve(vector_data.capacity * 2);
-    }
-
-    try { 
-        new (vector_data.arr + vector_data.size) T(std::forward<Args>(args)...);
-        ++vector_data.size;
-    }
-    catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
+        std::cerr << "error: vector<" << typeid(T).name() << ">: can't allocate memory\n";
         throw;
     }
+
+    realloc(new_arr, new_cap);
 }
-
-template<typename T>
-void vector<T>::push_back(const T& obj) {
-    emplace_back(obj);
-}
-
-template<typename T>
-void vector<T>::push_back(T&& obj) {
-    emplace_back(obj);
-}
-
-template<typename T>
-void vector<T>::pop_back() {
-    if (vector_data.size == 0) return;
-    --vector_data.size;
-    vector_data.arr[vector_data.size].~T();
-}
-
-template<typename T>
-void vector<T>::reserve(size_t new_cap) {
-#ifdef VECTOR_RESERVE_TEST    
-#include <string>   
-    const char* ch_cap = std::to_string(new_cap).c_str();
-    mylib::tests::MsSettings vector_reserve_set {mylib::tests::Color::green, ""};    
-    tests::informator.PrintMess(vector_reserve_set, 
-        {" ----> reserve ", ch_cap, " places of objects \n"}); 
-#endif
-
-    if (new_cap < vector_data.capacity) return;
-
-    std::byte* raw_mem = nullptr;
-    try{
-        raw_mem = new std::byte[sizeof(T) * new_cap]; //TODO: get new arr from allocator
-    }
-    catch(const std::exception& e) {
-        std::cerr << e.what() << '\n'; //TODO: log
-        throw;
-    }
-    vector_data.reallocation(reinterpret_cast<T*>(raw_mem));
-    vector_data.capacity = new_cap;
-
-#ifdef VECTOR_RESERVE_TEST    
-    tests::informator.PrintMess(vector_reserve_set, 
-        {"       reserved ",  ch_cap, " places of objects <-----\n"}); 
-#endif
-}    
 
 template<typename T>
 size_t vector<T>::size() const {
-    return vector_data.size;
+    return v_size;
 }
 
 template<typename T>
 size_t vector<T>::capacity() const {
-    return vector_data.capacity;
-}
-
-// *** iterator ***
-template<typename T>
-vector<T>::iterator::iterator(): base_iterator<T>() {
+    return v_capacity;
 }
 
 template<typename T>
-vector<T>::iterator::iterator(T* ptr): base_iterator<T>(ptr) {
+bool vector<T>::empty() const {
+    return v_size == 0;
 }
 
 template<typename T>
-vector<T>::iterator::iterator(const iterator& other): base_iterator<T>(other) {
+vector<T>::iterator::iterator(T* ptr): it {ptr} {    
 }
 
 template<typename T>
-typename vector<T>::iterator& vector<T>::iterator::operator=(const iterator& other) {
-    if (this != &other) {
-        this->it = nullptr;
-        this->it = other.it;
-    }
-    return *this;
+bool vector<T>::iterator::operator!=(const vector<T>::iterator& other) const {    
+    return it != other.it;
 }
 
 template<typename T>
-vector<T>::iterator::iterator(iterator&& other): base_iterator<T>(std::move(other)) {
+void vector<T>::iterator::operator++() {    
+    ++it;
 }
 
 template<typename T>
-typename vector<T>::iterator& vector<T>::iterator::operator=(iterator&& other) {
-    if (this != &other) {
-        this->it = nullptr;
-        this->it = other.it;
-        other.it = nullptr;
-    }
-    return *this;
+T& vector<T>::iterator::operator*() const {    
+    return *it;
 }
 
 template<typename T>
-vector<T>::iterator::~iterator() {
+T* vector<T>::iterator::operator->() const {    
+    return it;
 }
 
 template<typename T>
-void vector<T>::iterator::operator++() {
-    ++(this->it);
+typename vector<T>::iterator vector<T>::begin() const {    
+    return iterator(v_arr);
 }
 
 template<typename T>
-bool vector<T>::iterator::operator!=(const base_iterator<T>& other) const {
-    return (this->it != other.get());
+typename vector<T>::iterator vector<T>::end() const {    
+    return iterator(v_arr + v_size);
 }
-
-template<typename T>
-T* vector<T>::iterator::operator->() const {
-    return this->it;
-}
-
-template<typename T>
-T& vector<T>::iterator::operator*() const {
-    return *(this->it);
-}
-
-template<typename T>
-typename vector<T>::iterator vector<T>::begin() const {
-    return typename vector<T>::iterator(&(this->vector_data.arr[0]));
-}
-
-template<typename T>
-typename vector<T>::iterator vector<T>::end() const {
-    return typename vector<T>::iterator(&(this->vector_data.arr[vector_data.size]));
-}
- */
 
 
 }   // mylib
+
+

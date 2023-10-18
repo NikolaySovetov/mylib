@@ -1,1 +1,2 @@
 #cmakedefine ALLOCATOR_TEST
+#cmakedefine ALLOCATOR_STATISTICS
