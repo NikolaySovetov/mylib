@@ -8,7 +8,7 @@ add_subdirectory(04_list            )
 add_subdirectory(05_pair            )
 add_subdirectory(06_vector          )
 
-find_package(Curses REQUIRED )
+#find_package(Curses REQUIRED )
 
 add_executable(testexec testexec.cpp)
 
