@@ -109,8 +109,9 @@ void vector<T>::destroy_arr() noexcept {
     v_size = 0; 
 }
 
+// public 
 template<typename T>
-vector<T>::vector(const mylib::allocator& a) noexcept
+vector<T>::vector(const mylib::allocator& a)
 : v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {a} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
@@ -119,7 +120,7 @@ vector<T>::vector(const mylib::allocator& a) noexcept
 }
 
 template<typename T>
-vector<T>::vector(size_t size, const T& t, const mylib::allocator& a) noexcept
+vector<T>::vector(size_t size, const T& t, const mylib::allocator& a)
 : v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {a} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
@@ -135,7 +136,7 @@ vector<T>::vector(size_t size, const T& t, const mylib::allocator& a) noexcept
         }
     }
     catch (const std::bad_alloc& e) {
-        return;
+        throw;
     }
     catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
@@ -145,13 +146,13 @@ vector<T>::vector(size_t size, const T& t, const mylib::allocator& a) noexcept
         alloc.deallocate<T>(v_arr, size);
 
         std::cerr << "error: vector<" << typeid(T).name() << ">: can't construct container\n";
-        return;
+        throw;
     }
     v_size = size;
 }
 
 template<typename T>
-vector<T>::vector(const std::initializer_list<T>& list, const mylib::allocator& a) noexcept
+vector<T>::vector(mylib::initializer_list<T>&& list, const mylib::allocator& a)
 : v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {a} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
@@ -159,24 +160,29 @@ vector<T>::vector(const std::initializer_list<T>& list, const mylib::allocator& 
 #endif
 
     size_t new_size = list.size();   
+    v_arr = list.data();
+    list.reset();
+    v_capacity = list.size();
+    v_size = list.size();
 
-    try {
+/*     try {
         reserve(new_size);
         copy_from(list.begin(), new_size);
     }
     catch (const std::bad_alloc& e) {
-        return;
+        throw;
     }
     catch(const std::exception& e) {
         std::cerr << "error: vector<" << typeid(T).name() << ">: can't construct container\n";
-        return;
+        throw;
     }
+ */
     
     v_size = new_size;
 }
 
 template<typename T>
-vector<T>::vector(const vector& other) noexcept
+vector<T>::vector(const vector& other)
 : v_size {0}, v_capacity {0}, v_arr {nullptr}, alloc {other.alloc} {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
@@ -188,18 +194,18 @@ vector<T>::vector(const vector& other) noexcept
         copy_from(other.v_arr, other.v_size);
     }
     catch (const std::bad_alloc& e) {
-        return;
+        throw;
     }
     catch(const std::exception& e) {
         std::cerr << "error: vector<" << typeid(T).name() << ">: can't copy container\n";
-        return;
+        throw;
     }
     
     v_size = other.v_size;
 }
 
 template<typename T>
-vector<T>& vector<T>::operator=(const vector& other) noexcept {
+vector<T>& vector<T>::operator=(const vector& other) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
         {"( < type: ", typeid(T).name(), ">() =copied\n"}); 
@@ -218,13 +224,14 @@ vector<T>& vector<T>::operator=(const vector& other) noexcept {
     }
     catch(const std::exception& e) {
         std::cerr << "error: vector<" << typeid(T).name() << ">: can't copy container\n";
+        throw;
     }
     v_size = other.v_size;
     return *this;
 }
 
 template<typename T>
-vector<T>::vector(vector&& other) noexcept
+vector<T>::vector(vector&& other)
 : v_size {0}, v_capacity {0}, v_size {0}, alloc {std::move(other.alloc)}  {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
@@ -241,7 +248,7 @@ vector<T>::vector(vector&& other) noexcept
 }
 
 template<typename T>
-vector<T>& vector<T>::operator=(vector&& other) noexcept {
+vector<T>& vector<T>::operator=(vector&& other) {
 #ifdef VECTOR_TEST
     tests::informator.PrintMess(vector_set, 
         {"( < type: ", typeid(T).name(), ">() =moved\n"}); 

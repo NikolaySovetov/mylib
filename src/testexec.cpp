@@ -5,15 +5,12 @@
 #include "base_iterator.hpp"
 #include "list.hpp"
 #include "pair.hpp"
-#include "vector.hpp"
 #include <iostream>
-#include <vector>
-#include <typeinfo>
-#include <chrono>
-#include <thread>
 
 
 int main()  {
+
+   foo<int>({101, 102, 103});   
 
    mylib::vector<mylib::tests::Person> v;
    v.emplace_back("Nik");
@@ -47,26 +44,22 @@ int main()  {
 
    auto test_list = person_list;
 
-   mylib::vector<mylib::list<mylib::tests::Person>> person_vec {person_list,
-                                                                person_list,
-                                                                person_list,
-                                                                person_list,
-                                                                person_list,
-                                                                person_list,
-                                                                person_list,
-                                                                person_list,
-                                                                person_list};
+   mylib::vector<mylib::list<mylib::tests::Person>> person_vec;
+   person_vec.push_back(person_list);
+   person_vec.push_back(person_list);
+   person_vec.push_back(person_list);
+   person_vec.push_back(person_list);
    
    auto person_vec_copy {person_vec};
    auto person_vec_move {person_vec_copy};
 
-   mylib::vector<mylib::list<mylib::tests::Person>> person_vec_move_oper {person_list,
-                                                                          person_list,
-                                                                          person_list};
+   mylib::vector<mylib::list<mylib::tests::Person>> person_vec_move_oper;
+   person_vec_move_oper.push_back(person_list);
+   person_vec_move_oper.push_back(person_list);
+   person_vec_move_oper.push_back(person_list);
+   person_vec_move_oper.push_back(person_list);
 
    person_vec_move_oper = person_vec_move;
-
-
 
    mylib::list<mylib::tests::Person> list;
    list.emplace_back("Sara");

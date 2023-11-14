@@ -1,8 +1,8 @@
 #pragma once
+#include <cstddef>
+#include "initializer_list.hpp"
 #include "allocator.hpp"
 #include "base_iterator.hpp"
-#include <cstddef>
-#include <initializer_list>
 
 namespace mylib {
 
@@ -12,7 +12,6 @@ private:
     size_t v_size;
     size_t v_capacity;
     T*     v_arr;
-    
     mylib::allocator alloc;
 
 private:
@@ -25,15 +24,17 @@ private:
     void destroy_arr() noexcept;
 
 public:
-    vector(const mylib::allocator& alloc = mylib::allocator()) noexcept;
+    vector(const mylib::allocator& alloc = mylib::allocator());
     vector(size_t size, const T& t = T(), 
-           const mylib::allocator& alloc = mylib::allocator()) noexcept;
-    vector(const std::initializer_list<T>& list,        
-           const mylib::allocator& alloc = mylib::allocator()) noexcept;
-    vector(const vector& other) noexcept;
-    vector& operator=(const vector& other) noexcept;
-    vector(vector&& other) noexcept;
-    vector& operator=(vector&& other) noexcept;
+           const mylib::allocator& alloc = mylib::allocator());
+    vector(mylib::initializer_list<T>&& list,        
+           const mylib::allocator& alloc = mylib::allocator());
+    //TODO: mylib::initializer list need to iteration functional !!!
+
+    vector(const vector& other);
+    vector& operator=(const vector& other);
+    vector(vector&& other);
+    vector& operator=(vector&& other);
     ~vector();
 
     template<typename... Args>
