@@ -1,6 +1,6 @@
 Tested in GCC compiler.
 
-Porpose of this project is reinforce the basic of C++ language. 
+Purpose of this project is reinforce the basic of C++ language. 
 In this project I create simple container classes and test it with copying and moving a simple classes contained it.
   
 About context.
